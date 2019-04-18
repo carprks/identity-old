@@ -1,0 +1,25 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email --region eu-west-2)
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+  build:
+    commands:
+      - docker build -t $AWS_ECR/identity:latest
+        --build-arg build=$COMMIT_HASH
+        --build-arg version=$IMAGE_TAG
+        --build-arg serviceName=permissions
+        --build-arg AWS_ECR=$AWS_ECR
+        -f Dockerfile .
+      - docker tag $AWS_ECR/identity:latest $AWS_ECR/identity:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo $AWS_ECR/identity:$IMAGE_TAG
+      - docker push $AWS_ECR/identity:latest
+      - docker push $AWS_ECR/identity:$IMAGE_TAG
+      - printf '[{"name":"identity","imageUri":"%s"}]' $AWS_ECR/identity:$IMAGE_TAG > imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json
