@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"main/src/healthcheck"
+	"main/src/identity"
 	"main/src/probe"
 	"net/http"
 	"os"
@@ -31,6 +32,9 @@ func _main(args []string) int {
 
 	// Probe
 	router.HandleFunc("/probe", probe.HTTP)
+
+	// Create
+	router.HandleFunc("/", identity.Create).Methods("POST")
 
 	// User Permissions
 	// router.HandleFunc("/users/", permissions.CreateUser).Methods("POST")

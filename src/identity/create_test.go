@@ -3,6 +3,7 @@ package identity_test
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -52,6 +53,22 @@ func TestIdentity_Create(t *testing.T) {
 			request: identity.Identity{
 				Email: "test@test.test",
 				Phone: "123",
+				Company: false,
+				Registrations: []identity.Registration{
+					{
+						Plate: "test123",
+						VehicleType: identity.VehicleTypeCar,
+						Oversized: false,
+					},
+				},
+			},
+			expect: identity.Identity{},
+			err: errors.New("identity already exists"),
+		},
+		{
+			request: identity.Identity{
+				Email: "test@test.test",
+				Phone: "123",
 				Company: true,
 				Registrations: []identity.Registration{
 					{
@@ -82,8 +99,10 @@ func TestIdentity_Create(t *testing.T) {
 		response, err := test.request.Create()
 		assert.IsType(t, test.err, err)
 		assert.Equal(t, test.expect, response)
+	}
 
-		response.DeleteEntry()
+	for _, test := range tests {
+		test.expect.DeleteEntry()
 	}
 }
 
@@ -123,6 +142,36 @@ func TestCreate(t *testing.T) {
 			},
 			err: nil,
 		},
+		{
+			request: identity.Identity{
+				Email: "test@test.test",
+				Phone: "123",
+				Company: true,
+				Registrations: []identity.Registration{
+					{
+						Plate: "test123",
+						VehicleType: identity.VehicleTypeCar,
+						Oversized: false,
+					},
+				},
+			},
+			expect: identity.IdentityResponse{
+				Identity: identity.Identity{
+					ID: "780d270b-bb70-5ae9-96af-b7803c3c7b62",
+					Email: "test@test.test",
+					Phone: "123",
+					Company: true,
+					Registrations: []identity.Registration{
+						{
+							Plate: "test123",
+							VehicleType: identity.VehicleTypeCar,
+							Oversized: false,
+						},
+					},
+				},
+			},
+			err: nil,
+		},
 	}
 
 	for _, test := range tests {
@@ -136,7 +185,9 @@ func TestCreate(t *testing.T) {
 		i := identity.IdentityResponse{}
 		json.Unmarshal(body, &i)
 		assert.Equal(t, test.expect, i)
+	}
 
-		i.Identity.DeleteEntry()
+	for _, test := range tests {
+		test.expect.Identity.DeleteEntry()
 	}
 }

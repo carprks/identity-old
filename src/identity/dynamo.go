@@ -1,7 +1,9 @@
 package identity
 
 import (
+	"errors"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"os"
@@ -40,10 +42,21 @@ func (i Identity)CreateEntry() (Identity, error) {
 			},
 			"registrations": &regs,
 		},
+		ConditionExpression: aws.String("attribute_not_exists(#IDENTIFIER)"),
+		ExpressionAttributeNames: map[string]*string{
+			"#IDENTIFIER": aws.String("identifier"),
+		},
 	}
 	_, putErr := svc.PutItem(input)
 	if putErr != nil {
-		return Identity{}, err
+		if awerr, ok := putErr.(awserr.Error); ok {
+			switch awerr.Code(){
+			case dynamodb.ErrCodeConditionalCheckFailedException:
+				return Identity{}, errors.New("identity already exists")
+			}
+		} else {
+			return Identity{}, errors.New("unknown create error")
+		}
 	}
 
 	return i, nil
