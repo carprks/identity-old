@@ -16,6 +16,8 @@ import (
 )
 
 func TestIdentity_Create(t *testing.T) {
+	fmt.Println(fmt.Printf("Environ: %v", os.Environ()))
+
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
