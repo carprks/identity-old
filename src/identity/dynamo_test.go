@@ -6,13 +6,16 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"main/src/identity"
+	"os"
 	"testing"
 )
 
 func TestIdentity_CreateEntry(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(fmt.Errorf("create entry err: %v", err))
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
 	}
 
 	ident := identity.Identity{
@@ -52,9 +55,11 @@ func TestIdentity_CreateEntry(t *testing.T) {
 }
 
 func TestIdentity_UpdateEntry(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(fmt.Errorf("update entry err: %v", err))
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
 	}
 
 	identOrig := identity.Identity{
@@ -104,9 +109,11 @@ func TestIdentity_UpdateEntry(t *testing.T) {
 }
 
 func TestIdentity_ScanEntry(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(fmt.Errorf("scan entry err: %v", err))
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
 	}
 
 	tests := []struct{
@@ -158,9 +165,11 @@ func TestIdentity_ScanEntry(t *testing.T) {
 }
 
 func TestIdentity_ScanEntries(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(fmt.Errorf("scan entries err: %v", err))
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
 	}
 
 	tests := []struct{
@@ -183,9 +192,11 @@ func TestIdentity_ScanEntries(t *testing.T) {
 }
 
 func TestIdentity_RetrieveEntry(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(fmt.Errorf("retrieve entry err: %v", err))
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
 	}
 
 	ident := identity.Identity{
@@ -222,9 +233,11 @@ func TestIdentity_RetrieveEntry(t *testing.T) {
 }
 
 func TestIdentity_DeleteEntry(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(fmt.Errorf("delete entry err: %v", err))
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
 	}
 
 	ident := identity.Identity{

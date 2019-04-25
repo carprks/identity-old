@@ -11,13 +11,16 @@ import (
 	"main/src/identity"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
 func TestIdentity_Create(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(fmt.Errorf("godotenv err: %v", err))
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
 	}
 
 	tests := []struct{
@@ -119,6 +122,13 @@ func TestIdentity_Create(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
+	}
+
 	tests := []struct{
 		request identity.Identity
 		expect identity.Response

@@ -201,34 +201,26 @@ func (i Identity)ScanEntry() (Identity, error) {
 		input = &dynamodb.ScanInput{
 			ExpressionAttributeNames: map[string]*string{
 				"#PHONE": aws.String("phone"),
-				"#PLATE": aws.String("plate"),
 			},
 			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 				":phone": {
 					S: aws.String(i.Phone),
 				},
-				":plate": {
-					S: aws.String(i.Registrations[0].Plate),
-				},
 			},
-			FilterExpression: aws.String("#PHONE = :phone AND #PLATE = :plate"),
+			FilterExpression: aws.String("#PHONE = :phone"),
 			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
 		}
 	} else if i.Email != "" {
 		input = &dynamodb.ScanInput{
 			ExpressionAttributeNames: map[string]*string{
 				"#EMAIL": aws.String("email"),
-				"#PLATE": aws.String("plate"),
 			},
 			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 				":email": {
 					S: aws.String(i.Email),
 				},
-				":plate": {
-					S: aws.String(i.Registrations[0].Plate),
-				},
 			},
-			FilterExpression: aws.String("#EMAIL = :email AND #PLATE = :plate"),
+			FilterExpression: aws.String("#EMAIL = :email"),
 			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
 		}
 	} else if i.Phone != "" && i.Email != "" {
@@ -236,7 +228,6 @@ func (i Identity)ScanEntry() (Identity, error) {
 			ExpressionAttributeNames: map[string]*string{
 				"#EMAIL": aws.String("email"),
 				"#PHONE": aws.String("phone"),
-				"#PLATE": aws.String("plate"),
 			},
 			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
 				":email": {
@@ -249,7 +240,7 @@ func (i Identity)ScanEntry() (Identity, error) {
 					S: aws.String(i.Registrations[0].Plate),
 				},
 			},
-			FilterExpression: aws.String("#PHONE = :phone AND #EMAIL = :email AND #PLATE = :plate"),
+			FilterExpression: aws.String("#PHONE = :phone AND #EMAIL = :email"),
 			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
 		}
 	}

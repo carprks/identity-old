@@ -5,13 +5,16 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"main/src/identity"
+	"os"
 	"testing"
 )
 
 func TestIdentity_Retrieve(t *testing.T) {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println(fmt.Errorf("godotenv err: %v", err))
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
 	}
 
 	tests := []struct{
