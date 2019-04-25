@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-// Create entity
+// CreateEntry entity
 func (i Identity)CreateEntry() (Identity, error) {
 	s, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("AWS_DB_REGION")),
@@ -62,7 +62,7 @@ func (i Identity)CreateEntry() (Identity, error) {
 	return i, nil
 }
 
-// Retrieve entity
+// RetrieveEntry entity
 func (i Identity)RetrieveEntry() (Identity, error) {
 	s, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("AWS_DB_REGION")),
@@ -95,7 +95,7 @@ func (i Identity)RetrieveEntry() (Identity, error) {
 			reg := Registration{
 				Plate: *ritem["plate"].S,
 				Oversized: *ritem["oversized"].BOOL,
-				VehicleType: GetVechicleType(*ritem["vehicleType"].S),
+				VehicleType: GetVehicleType(*ritem["vehicleType"].S),
 			}
 
 			regs = append(regs, reg)
@@ -111,7 +111,7 @@ func (i Identity)RetrieveEntry() (Identity, error) {
 	}, nil
 }
 
-// Update entity
+// UpdateEntry entity
 func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 	s, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("AWS_DB_REGION")),
@@ -163,7 +163,7 @@ func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 	return n, nil
 }
 
-// Delete entity
+// DeleteEntry entity
 func (i Identity)DeleteEntry() (Identity, error) {
 	s, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("AWS_DB_REGION")),
@@ -189,7 +189,121 @@ func (i Identity)DeleteEntry() (Identity, error) {
 	return Identity{}, nil
 }
 
-// Scan entities
+// ScanEntry entry
+func (i Identity)ScanEntry() (Identity, error) {
+	if len(i.Registrations) == 0 {
+		return Identity{}, errors.New("need at least 1 plate")
+	}
+
+	input := &dynamodb.ScanInput{}
+
+	if i.Phone != "" {
+		input = &dynamodb.ScanInput{
+			ExpressionAttributeNames: map[string]*string{
+				"#PHONE": aws.String("phone"),
+				"#PLATE": aws.String("plate"),
+			},
+			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+				":phone": {
+					S: aws.String(i.Phone),
+				},
+				":plate": {
+					S: aws.String(i.Registrations[0].Plate),
+				},
+			},
+			FilterExpression: aws.String("#PHONE = :phone AND #PLATE = :plate"),
+			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+		}
+	} else if i.Email != "" {
+		input = &dynamodb.ScanInput{
+			ExpressionAttributeNames: map[string]*string{
+				"#EMAIL": aws.String("email"),
+				"#PLATE": aws.String("plate"),
+			},
+			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+				":email": {
+					S: aws.String(i.Email),
+				},
+				":plate": {
+					S: aws.String(i.Registrations[0].Plate),
+				},
+			},
+			FilterExpression: aws.String("#EMAIL = :email AND #PLATE = :plate"),
+			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+		}
+	} else if i.Phone != "" && i.Email != "" {
+		input = &dynamodb.ScanInput{
+			ExpressionAttributeNames: map[string]*string{
+				"#EMAIL": aws.String("email"),
+				"#PHONE": aws.String("phone"),
+				"#PLATE": aws.String("plate"),
+			},
+			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+				":email": {
+					S: aws.String(i.Email),
+				},
+				":phone": {
+					S: aws.String(i.Phone),
+				},
+				":plate": {
+					S: aws.String(i.Registrations[0].Plate),
+				},
+			},
+			FilterExpression: aws.String("#PHONE = :phone AND #EMAIL = :email AND #PLATE = :plate"),
+			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+		}
+	}
+
+
+	s, err := session.NewSession(&aws.Config{
+		Region: aws.String(os.Getenv("AWS_DB_REGION")),
+		Endpoint: aws.String(os.Getenv("AWS_DB_ENDPOINT")),
+	})
+	if err != nil {
+		return Identity{}, err
+	}
+	svc := dynamodb.New(s)
+	result, err := svc.Scan(input)
+	if err != nil {
+		return Identity{}, err
+	}
+
+	if len(result.Items) == 1 {
+		item := result.Items[0]
+
+		ident := Identity{
+			ID: *item["identifier"].S,
+			Email: *item["email"].S,
+			Phone: *item["phone"].S,
+			Company: *item["company"].BOOL,
+		}
+
+		regLen := len(item["registrations"].L)
+		if regLen >= 1 {
+			regs := []Registration{}
+
+			for j := 0; j < regLen; j++ {
+				ritem := item["registrations"].L[j].M
+
+				reg := Registration{
+					Plate: *ritem["plate"].S,
+					Oversized: *ritem["oversized"].BOOL,
+					VehicleType: GetVehicleType(*ritem["vehicleType"].S),
+				}
+
+				regs = append(regs, reg)
+			}
+
+			ident.Registrations = regs
+		}
+
+		return ident, nil
+	}
+
+	return Identity{}, nil
+}
+
+// ScanEntries entities
 func (i Identity)ScanEntries() ([]Identity, error) {
 	s, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("AWS_DB_REGION")),
@@ -231,7 +345,7 @@ func (i Identity)ScanEntries() ([]Identity, error) {
 					reg := Registration{
 						Plate: *ritem["plate"].S,
 						Oversized: *ritem["oversized"].BOOL,
-						VehicleType: GetVechicleType(*ritem["vehicleType"].S),
+						VehicleType: GetVehicleType(*ritem["vehicleType"].S),
 					}
 
 					regs = append(regs, reg)

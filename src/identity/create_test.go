@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -14,7 +15,10 @@ import (
 )
 
 func TestIdentity_Create(t *testing.T) {
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println(fmt.Errorf("godotenv err: %v", err))
+	}
 
 	tests := []struct{
 		request identity.Identity
@@ -97,19 +101,27 @@ func TestIdentity_Create(t *testing.T) {
 
 	for _, test := range tests {
 		response, err := test.request.Create()
-		assert.IsType(t, test.err, err)
+		correct := assert.IsType(t, test.err, err)
+		if !correct {
+			fmt.Println(fmt.Errorf("create entry: %v", err))
+		}
 		assert.Equal(t, test.expect, response)
 	}
 
 	for _, test := range tests {
-		test.expect.DeleteEntry()
+		if test.expect.ID != "" {
+			_, err := test.expect.DeleteEntry()
+			if err != nil {
+				fmt.Println(fmt.Errorf("create delete entry: %v", err))
+			}
+		}
 	}
 }
 
 func TestCreate(t *testing.T) {
 	tests := []struct{
 		request identity.Identity
-		expect identity.IdentityResponse
+		expect identity.Response
 		err error
 	}{
 		{
@@ -125,7 +137,7 @@ func TestCreate(t *testing.T) {
 					},
 				},
 			},
-			expect: identity.IdentityResponse{
+			expect: identity.Response{
 				Identity: identity.Identity{
 					ID: "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
 					Email: "test@test.test",
@@ -155,7 +167,7 @@ func TestCreate(t *testing.T) {
 					},
 				},
 			},
-			expect: identity.IdentityResponse{
+			expect: identity.Response{
 				Identity: identity.Identity{
 					ID: "780d270b-bb70-5ae9-96af-b7803c3c7b62",
 					Email: "test@test.test",
@@ -182,12 +194,18 @@ func TestCreate(t *testing.T) {
 		assert.Equal(t, 201, response.Code)
 
 		body, _ := ioutil.ReadAll(response.Body)
-		i := identity.IdentityResponse{}
-		json.Unmarshal(body, &i)
+		i := identity.Response{}
+		err := json.Unmarshal(body, &i)
+		if err != nil {
+			fmt.Println(fmt.Errorf("create json error: %v", err))
+		}
 		assert.Equal(t, test.expect, i)
 	}
 
 	for _, test := range tests {
-		test.expect.Identity.DeleteEntry()
+		_, err := test.expect.Identity.DeleteEntry()
+		if err != nil {
+			fmt.Println(fmt.Errorf("create delete http: %v", err))
+		}
 	}
 }

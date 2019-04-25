@@ -6,7 +6,8 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-type IdentityResponse struct {
+// Response struct
+type Response struct {
 	Identity Identity `json:"identity,omitempty"`
 	Error error `json:"error,omitempty"`
 }
@@ -57,7 +58,8 @@ func (v VehicleType)convertToString() string {
 	return string(VehicleTypeUnknown)
 }
 
-func GetVechicleType(s string) VehicleType {
+// GetVehicleType returns the vehicle type
+func GetVehicleType(s string) VehicleType {
 	if strings.Contains(string(VehicleTypeCar), s) {
 		return VehicleTypeCar
 	}
