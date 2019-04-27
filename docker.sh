@@ -15,6 +15,10 @@ if [[ ! -z "$2" ]]; then
     version=$2
 fi
 
+set -a
+. ./.env
+set +a
+
 # Export the vars
 export SERVICENAME=$dockerPath
 export VERSION=$version
@@ -40,4 +44,4 @@ else
     docker run -P --rm -d -it --name $dockerPath carprks/$dockerPath:$version
 fi
 
-aws dynamodb create-table --table-name permissions --attribute-definitions AttributeName=identifier,AttributeType=S --key-schema AttributeName=identifier,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url http://docker.devel:8000
+aws dynamodb create-table --table-name identity --attribute-definitions AttributeName=identifier,AttributeType=S --key-schema AttributeName=identifier,KeyType=HASH --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 --endpoint-url http://docker.devel:8000

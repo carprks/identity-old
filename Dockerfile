@@ -14,6 +14,14 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
+# Envs
+ARG AWS_DB_REGION
+ARG AWS_DB_ENDPOINT
+ARG AWS_DB_TABLE
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG DATABASE_DYNAMO
+
 # Lint and Test
 COPY . .
 RUN golint -set_exit_status ./...

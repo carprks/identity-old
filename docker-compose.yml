@@ -1,7 +1,9 @@
 version: '3'
 services:
   go:
-    image: carprks/${SERVICENAME}:${VERSION}
+    #image: carprks/${SERVICENAME}:${VERSION}
+    build:
+      context: .
     env_file:
         - .env
     ports:
