@@ -16,8 +16,6 @@ import (
 )
 
 func TestIdentity_Create(t *testing.T) {
-	fmt.Println(fmt.Printf("Environ: %v", os.Environ()))
-
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
@@ -76,7 +74,7 @@ func TestIdentity_Create(t *testing.T) {
 		},
 		{
 			request: identity.Identity{
-				Email: "test@test.test",
+				Email: "test.company@test.test",
 				Phone: "123",
 				Company: true,
 				Registrations: []identity.Registration{
@@ -88,8 +86,8 @@ func TestIdentity_Create(t *testing.T) {
 				},
 			},
 			expect: identity.Identity{
-				ID: "780d270b-bb70-5ae9-96af-b7803c3c7b62",
-				Email: "test@test.test",
+				ID: "b0635b33-38d0-5bee-90f9-af8a239826fe",
+				Email: "test.company@test.test",
 				Phone: "123",
 				Company: true,
 				Registrations: []identity.Registration{
@@ -168,7 +166,7 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			request: identity.Identity{
-				Email: "test@test.test",
+				Email: "test.company@test.test",
 				Phone: "123",
 				Company: true,
 				Registrations: []identity.Registration{
@@ -181,8 +179,8 @@ func TestCreate(t *testing.T) {
 			},
 			expect: identity.Response{
 				Identity: identity.Identity{
-					ID: "780d270b-bb70-5ae9-96af-b7803c3c7b62",
-					Email: "test@test.test",
+					ID: "b0635b33-38d0-5bee-90f9-af8a239826fe",
+					Email: "test.company@test.test",
 					Phone: "123",
 					Company: true,
 					Registrations: []identity.Registration{
