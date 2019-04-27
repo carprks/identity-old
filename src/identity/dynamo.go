@@ -236,9 +236,6 @@ func (i Identity)ScanEntry() (Identity, error) {
 				":phone": {
 					S: aws.String(i.Phone),
 				},
-				":plate": {
-					S: aws.String(i.Registrations[0].Plate),
-				},
 			},
 			FilterExpression: aws.String("#PHONE = :phone AND #EMAIL = :email"),
 			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
