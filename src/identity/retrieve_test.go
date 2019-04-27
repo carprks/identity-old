@@ -61,14 +61,26 @@ func TestIdentity_Retrieve(t *testing.T) {
 		},
 	}
 
+	// Create
 	for _, test := range tests {
 		_, err := test.create.Create()
 		if err != nil {
 			fmt.Println(fmt.Errorf("retrieve create err: %v", err))
 		}
+	}
 
+	// Retrieve
+	for _, test := range tests {
 		response, err := test.request.Retrieve()
 		assert.IsType(t, test.err, err)
 		assert.Equal(t, test.expect, response)
+	}
+
+	// Delete
+	for _, test := range tests {
+		_, err  := test.expect.DeleteEntry()
+		if err != nil {
+			fmt.Println(fmt.Errorf("retrive delete err: %v", err))
+		}
 	}
 }
