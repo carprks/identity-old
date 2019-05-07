@@ -22,13 +22,14 @@ ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 ARG DATABASE_DYNAMO
 
+# Debug
+RUN echo $AWS_DB_TABLE
+
 # Lint and Test
 COPY . .
 RUN golint -set_exit_status ./...
 RUN go test -short ./...
 RUN go test -race -short ./...
-
-RUN echo $AWS_DB_TABLE
 
 # Build
 ARG build
