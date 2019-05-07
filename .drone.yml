@@ -19,6 +19,18 @@ steps:
     AWS_SECRET:
       from_secret: aws_secret
     commands:
-    - docker build -t $AWS_ECR/identity:latest --build-arg build=$DRONE_COMMIT --build-arg version=$IMAGE_TAG --build-arg serviceName=identity --build-arg AWS_ECR=$AWS_ECR --build-arg AWS_DB_REGiON=eu-west-1 --build-arg AWS_DB_ENDPOINT=https://dynamodb.eu-west-2.amazonaws.com --build-arg AWS_DB_TABLE=$AWS_DB_TABLE --build-arg AWS_ACCESS_KEY_ID=$AWS_KEY --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET --build-arg DATABASE_DYNAMO=true -f Dockerfile .
+    - |
+        docker build -t $AWS_ECR/identity:latest
+        --build-arg build=$DRONE_COMMIT
+        --build-arg version=$IMAGE_TAG
+        --build-arg serviceName=identity
+        --build-arg AWS_ECR=$AWS_ECR
+        --build-arg AWS_DB_REGiON=eu-west-2
+        --build-arg AWS_DB_ENDPOINT=https://dynamodb.eu-west-2.amazonaws.com
+        --build-arg AWS_DB_TABLE=$AWS_DB_TABLE
+        --build-arg AWS_ACCESS_KEY_ID=$AWS_KEY
+        --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET
+        --build-arg DATABASE_DYNAMO=true
+        -f Dockerfile .
     - docker tag $AWS_ECR/identity:latest $AWS_ECR/identity:$IMAGE_TAG
 
