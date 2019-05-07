@@ -3,6 +3,14 @@ pipeline:
     image: plugins/docker
     environment:
       IMAGE_TAG: build-$DRONE_BUILD_NUMBER
+      AWS_ECR:
+        from_secret: aws_ecr
+      AWS_DB_TABLE:
+        from_secret: aws_db_table
+      AWS_KEY:
+        from_secret: aws_key
+      AWS_SECRET:
+        from_secret: aws_secret
     settings:
       auto_tag: true
       registry:
@@ -10,17 +18,14 @@ pipeline:
       repo:
         from_secret: aws_ecr_path
       build_args:
-        build: $DRONE_COMMIT
-        version: $IMAGE_TAG
-        serviceName: identity
-        AWS_ECR:
-          from_secret: aws_ecr
-        AWS_DB_REGION: eu-west-2
-        AWS_DB_ENDPOINT: https://dynamodb.eu-west-2.amazonaws.com
-        AWS_DB_TABLE:
-          from_secret: aws_db_table
-        AWS_ACCESS_KEY_ID:
-          from_secret: aws_key
-        AWS_SECRET_ACCESS_KEY:
-          from_secret: aws_secret
-        DATABASE_DYNAMO: true
+        - build=$DRONE_COMMIT
+        - version=$IMAGE_TAG
+        - serviceName=identity
+        - AWS_DB_REGION=eu-west-2
+        - AWS_ECR=$AWS_ECR
+        - AWS_DB_REGION=eu-west-2
+        - AWS_DB_ENDPOINT=https://dynamodb.eu-west-2.amazonaws.com
+        - AWS_DB_TABLE=$AWS_DB_TABLE
+        - AWS_ACCESS_KEY_ID=$AWS_KEY
+        - AWS_SECRET_ACCESS_KEY=$AWS_SECRET
+        - DATABASE_DYNAMO=true
