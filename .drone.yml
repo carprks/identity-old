@@ -1,6 +1,15 @@
 pipeline:
   test:
     image: golang:1.12
+    environment:
+      AWS_ECR:
+        from_secret: aws_ecr
+      AWS_DB_TABLE:
+        from_secret: aws_db_table
+      AWS_KEY:
+        from_secret: aws_key
+      AWS_SECRET:
+        from_secret: aws_secret
     commands:
       - go test ./...
 
