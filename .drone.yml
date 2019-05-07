@@ -1,6 +1,6 @@
 pipeline:
   test:
-    image: golang:1.12.4-alpine
+    image: golang:1.12
     commands:
       - go test
 
