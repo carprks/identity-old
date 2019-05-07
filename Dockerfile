@@ -24,6 +24,7 @@ ARG DATABASE_DYNAMO
 
 # Debug
 RUN echo $AWS_DB_TABLE
+RUN echo ${AWS_DB_TABLE}
 
 # Lint and Test
 COPY . .
