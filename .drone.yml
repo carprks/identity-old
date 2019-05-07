@@ -2,5 +2,5 @@ pipeline:
   test:
     image: golang:1.12
     commands:
-      - go test
+      - go test ./...
 
