@@ -5,6 +5,8 @@ pipeline:
       IMAGE_TAG: build-$DRONE_BUILD_NUMBER
     settings:
       auto_tag: true
+      registry:
+        from_secret: aws_ecr
       repo:
         from_secret: aws_ecr_path
       build_args:
