@@ -28,6 +28,10 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/health+json")
+	w.Header().Set("Strict-Transport-Security", "max-age=1000; includeSubDomains; preload")
+	w.Header().Set("Content-Security-Policy", "upgrade-insecure-requests")
+	w.Header().Set("Feature-Policy", "vibrate 'none'; geolocation 'none'")
+
 	j, _ := json.Marshal(health)
 	w.Write(j)
 	w.WriteHeader(http.StatusOK)
