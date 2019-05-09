@@ -22,7 +22,7 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 		j, _ := json.Marshal(Health{
 			Status: HealthFail,
 		})
-		err := w.Write(j)
+		w.Write(j)
 		w.WriteHeader(http.StatusOK)
 		return
 	}
