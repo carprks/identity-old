@@ -32,8 +32,8 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Strict-Transport-Security", "max-age=1000; includeSubDomains; preload")
 	w.Header().Set("Content-Security-Policy", "upgrade-insecure-requests")
 	w.Header().Set("Feature-Policy", "vibrate 'none'; geolocation 'none'")
-	w.Write(j)
 	w.WriteHeader(http.StatusOK)
+	w.Write(j)
 }
 
 // Check do the health check itself
