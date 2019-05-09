@@ -18,8 +18,8 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 	resp, _ := Probe()
 
 	// send status
-	w.Header().Set("Content-Type", "application/health+json")
 	j, _ := json.Marshal(resp)
+	w.Header().Set("Content-Type", "application/health+json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(j)
 
