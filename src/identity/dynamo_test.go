@@ -272,3 +272,49 @@ func TestIdentity_DeleteEntry(t *testing.T) {
 		assert.Equal(t, test.expect, response)
 	}
 }
+
+func TestScanAll(t *testing.T) {
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godoterr: %v", err))
+		}
+	}
+
+	idents := []identity.Identity{}
+	for i := 0; i < 10; i++ {
+		ident := identity.Identity{
+			ID:    fmt.Sprintf("testDyamo%d", i),
+			Email: fmt.Sprintf("test%d@test.test", i),
+			Phone: fmt.Sprintf("%d", i),
+		}
+		idents = append(idents, ident)
+
+		_, err := ident.CreateEntry()
+		if err != nil {
+			fmt.Println(fmt.Errorf("scan create err: %v", err))
+		}
+	}
+
+	tests := []struct{
+		expect []identity.Identity
+		err error
+	}{
+		{
+			expect: idents,
+			err: nil,
+		},
+	}
+	for _, test := range tests {
+		resp, err := identity.ScanAll()
+		assert.IsType(t, test.err, err)
+		assert.Equal(t, test.expect, resp)
+	}
+
+	for _, ident := range idents {
+		_, err := ident.DeleteEntry()
+		if err != nil {
+			fmt.Println(fmt.Errorf("delete scan err: %v", err))
+		}
+	}
+}

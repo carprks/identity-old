@@ -10,6 +10,6 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a // indirect
 	github.com/stretchr/testify v1.3.0
-	golang.org/x/net v0.0.0-20190503192946-f4e77d36d62c // indirect
+	golang.org/x/net v0.0.0-20190503192946-f4e77d36d62c
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )

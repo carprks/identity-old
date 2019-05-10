@@ -291,6 +291,12 @@ func (i Identity)ScanEntry() (Identity, error) {
 	return Identity{}, nil
 }
 
+// ScanAll
+func ScanAll() ([]Identity, error) {
+	i := Identity{}
+	return i.ScanEntries()
+}
+
 // ScanEntries entities
 func (i Identity)ScanEntries() ([]Identity, error) {
 	s, err := session.NewSession(&aws.Config{
@@ -374,6 +380,10 @@ func convertRegistrationsToDynamo(regs []Registration) (dynamodb.AttributeValue,
 					M: retMap,
 				},
 			},
+		}
+	} else {
+		ret = dynamodb.AttributeValue{
+			BOOL: aws.Bool(false),
 		}
 	}
 

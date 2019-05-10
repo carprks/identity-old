@@ -1,6 +1,7 @@
 package identity_test
 
 import (
+	"errors"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -8,6 +9,65 @@ import (
 	"os"
 	"testing"
 )
+
+func TestRetrieveAll(t *testing.T) {
+	if os.Getenv("AWS_DB_TABLE") == "" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+		}
+	}
+
+	create := []struct{
+		identity.Identity
+	}{
+		{
+			identity.Identity{
+				Email: "test@test.test",
+				Phone: "123",
+			},
+		},
+		{
+			identity.Identity{
+				Email: "test123@test.test",
+				Phone: "456",
+			},
+		},
+	}
+
+	idents := []identity.Identity{}
+	for _, test := range create {
+		resp, err := test.Create()
+		if err != nil {
+			fmt.Println(fmt.Errorf("RetreiveAll Create Err: %v", err))
+		}
+
+		idents = append(idents, resp)
+	}
+
+	tests := []struct{
+		expect []identity.Identity
+		err error
+	}{
+		{
+			expect: idents,
+			err: nil,
+		},
+	}
+
+	for _, test := range tests {
+		resp, err := identity.RetrieveAll()
+		assert.IsType(t, test.err, err)
+		assert.Equal(t, test.expect, resp)
+	}
+
+	for _, ident := range idents {
+		_, err := ident.DeleteEntry()
+		if err != nil {
+			fmt.Println(fmt.Errorf("retriveall delete err: %v", err))
+		}
+	}
+}
 
 func TestIdentity_Retrieve(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
@@ -17,25 +77,31 @@ func TestIdentity_Retrieve(t *testing.T) {
 		}
 	}
 
+	create := []struct{
+		identity.Identity
+	}{
+		{
+			identity.Identity{
+				Email:   "test@test.test",
+				Phone:   "123",
+				Company: false,
+				Registrations: []identity.Registration{
+					{
+						Plate:       "test123",
+						VehicleType: identity.VehicleTypeCar,
+						Oversized:   false,
+					},
+				},
+			},
+		},
+	}
+
 	tests := []struct{
-		create identity.Identity
 		request identity.Identity
 		expect identity.Identity
 		err error
 	}{
 		{
-			create: identity.Identity{
-				Email: "test@test.test",
-				Phone: "123",
-				Company: false,
-				Registrations: []identity.Registration{
-					{
-						Plate: "test123",
-						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
-					},
-				},
-			},
 			request: identity.Identity{
 				Email: "test@test.test",
 				Registrations: []identity.Registration{
@@ -59,11 +125,23 @@ func TestIdentity_Retrieve(t *testing.T) {
 			},
 			err: nil,
 		},
+		{
+			request: identity.Identity{
+				Email: "test@test.test",
+				Registrations: []identity.Registration{
+					{
+						Plate: "123test",
+					},
+				},
+			},
+			expect: identity.Identity{},
+			err: errors.New("no plate match"),
+		},
 	}
 
 	// Create
-	for _, test := range tests {
-		_, err := test.create.Create()
+	for _, test := range create {
+		_, err := test.Create()
 		if err != nil {
 			fmt.Println(fmt.Errorf("retrieve create err: %v", err))
 		}
@@ -78,9 +156,11 @@ func TestIdentity_Retrieve(t *testing.T) {
 
 	// Delete
 	for _, test := range tests {
-		_, err  := test.expect.DeleteEntry()
-		if err != nil {
-			fmt.Println(fmt.Errorf("retrive delete err: %v", err))
+		if test.expect.ID != "" {
+			_, err  := test.expect.DeleteEntry()
+			if err != nil {
+				fmt.Println(fmt.Errorf("retrive delete err: %v", err))
+			}
 		}
 	}
 }

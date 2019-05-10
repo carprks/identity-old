@@ -2,8 +2,8 @@ package probe
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -11,7 +11,7 @@ import (
 func HTTP(w http.ResponseWriter, r *http.Request) {
 	buf, _ := ioutil.ReadAll(r.Body)
 	if len(buf) >= 1 {
-		log.Println("Probe Request", string(buf))
+		fmt.Println(fmt.Printf("Probe Request", string(buf)))
 	}
 
 	// get probe response
@@ -22,7 +22,10 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/health+json")
 	w.Header().Set("Service", "Identity")
 	w.WriteHeader(http.StatusOK)
-	w.Write(j)
+	_, err := w.Write(j)
+	if err != nil {
+		fmt.Println(fmt.Printf("Write Failed: %v", err))
+	}
 
 	return
 }
