@@ -2,6 +2,7 @@ package identity
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -11,7 +12,11 @@ import (
 func (i Identity)Create() (Identity, error) {
 	i.ID = i.createIdentifier()
 
-	return i.CreateEntry()
+	if len(i.Registrations) >= 1 {
+		return i.CreateEntry()
+	}
+
+	return Identity{}, errors.New("need at least 1 registration")
 }
 
 // Create http

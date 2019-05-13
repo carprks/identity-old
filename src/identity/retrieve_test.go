@@ -25,12 +25,24 @@ func TestRetrieveAll(t *testing.T) {
 			identity.Identity{
 				Email: "test@test.test",
 				Phone: "123",
+				Registrations: []identity.Registration{
+					{
+						Plate: "test123",
+						VehicleType: identity.VehicleTypeCar,
+					},
+				},
 			},
 		},
 		{
 			identity.Identity{
 				Email: "test123@test.test",
 				Phone: "456",
+				Registrations: []identity.Registration{
+					{
+						Plate: "test456",
+						VehicleType: identity.VehicleTypeBike,
+					},
+				},
 			},
 		},
 	}
@@ -137,14 +149,24 @@ func TestIdentity_Retrieve(t *testing.T) {
 			expect: identity.Identity{},
 			err: errors.New("no plate match"),
 		},
+		{
+			request: identity.Identity{
+				Email: "test@test.test",
+			},
+			expect: identity.Identity{},
+			err: errors.New("need at least 1 plate"),
+		},
 	}
 
 	// Create
+	created := []identity.Identity{}
 	for _, test := range create {
-		_, err := test.Create()
+		res, err := test.Create()
 		if err != nil {
 			fmt.Println(fmt.Errorf("retrieve create err: %v", err))
 		}
+
+		created = append(created, res)
 	}
 
 	// Retrieve
@@ -155,9 +177,9 @@ func TestIdentity_Retrieve(t *testing.T) {
 	}
 
 	// Delete
-	for _, test := range tests {
-		if test.expect.ID != "" {
-			_, err  := test.expect.DeleteEntry()
+	for _, test := range created {
+		if test.ID != "" {
+			_, err  := test.DeleteEntry()
 			if err != nil {
 				fmt.Println(fmt.Errorf("retrive delete err: %v", err))
 			}

@@ -75,36 +75,95 @@ func TestIdentity_UpdateEntry(t *testing.T) {
 			},
 		},
 	}
-	identUpdate := identity.Identity{
-		ID: "testDynamo",
-		Company: true,
-		Phone: "123",
-		Email: "testDynamo@test.test",
-		Registrations: []identity.Registration{
-			{
-				Plate: "test1234",
-				VehicleType: identity.VehicleTypeCar,
-				Oversized: false,
-			},
-		},
-	}
 
 	tests := []struct{
 		request identity.Identity
+		update identity.Identity
 		expect identity.Identity
 		err error
 	}{
 		{
 			request: identOrig,
-			expect: identUpdate,
+			update: identity.Identity{
+				ID: "testDynamo",
+				Company: true,
+			},
+			expect: identity.Identity{
+				ID: "testDynamo",
+				Company: true,
+				Phone: "123",
+				Email: "testDynamo@test.test",
+				Registrations: []identity.Registration{
+					{
+						Plate: "test1234",
+						VehicleType: identity.VehicleTypeCar,
+						Oversized: false,
+					},
+				},
+			},
+			err: nil,
+		},
+		{
+			request: identOrig,
+			update: identity.Identity{
+				ID: "testDynamo",
+				Email: "testDynamoUpdate@test.test",
+			},
+			expect: identity.Identity{
+				ID: "testDynamo",
+				Company: true,
+				Phone: "123",
+				Email: "testDynamoUpdate@test.test",
+				Registrations: []identity.Registration{
+					{
+						Plate: "test1234",
+						VehicleType: identity.VehicleTypeCar,
+						Oversized: false,
+					},
+				},
+			},
+			err: nil,
+		},
+		{
+			request: identOrig,
+			update: identity.Identity{
+				Registrations: []identity.Registration{
+					{
+						Plate: "test12345",
+						VehicleType: identity.VehicleTypeBike,
+						Oversized: true,
+					},
+				},
+			},
+			expect: identity.Identity{
+				ID:"testDynamo",
+				Email:"testDynamoUpdate@test.test",
+				Phone:"123",
+				Company:true,
+				Registrations: []identity.Registration{
+					{
+						VehicleType:"Motorbike", Oversized:true, Plate:"test12345",
+					},
+				},
+			},
 			err: nil,
 		},
 	}
 
 	for _, test := range tests {
-		response, err := test.request.UpdateEntry(identUpdate)
+		response, err := test.request.UpdateEntry(test.update)
 		assert.IsType(t, test.err, err)
 		assert.Equal(t, test.expect, response)
+	}
+
+	// delete and recreate
+	_, err := identOrig.DeleteEntry()
+	if err != nil {
+		fmt.Println(fmt.Errorf("update delete: %v", err))
+	}
+	_, err = identOrig.CreateEntry()
+	if err != nil {
+		fmt.Println(fmt.Errorf("create delete: %v", err))
 	}
 }
 
@@ -139,7 +198,7 @@ func TestIdentity_ScanEntry(t *testing.T) {
 			},
 			expect: identity.Identity{
 				ID:      "testDynamo",
-				Company: true,
+				Company: false,
 				Phone:   "123",
 				Email:   "testDynamo@test.test",
 				Registrations: []identity.Registration{
@@ -201,7 +260,7 @@ func TestIdentity_RetrieveEntry(t *testing.T) {
 
 	ident := identity.Identity{
 		ID: "testDynamo",
-		Company: true,
+		Company: false,
 		Phone: "123",
 		Email: "testDynamo@test.test",
 		Registrations: []identity.Registration{
@@ -308,7 +367,7 @@ func TestScanAll(t *testing.T) {
 	for _, test := range tests {
 		resp, err := identity.ScanAll()
 		assert.IsType(t, test.err, err)
-		assert.Equal(t, test.expect, resp)
+		assert.Equal(t, len(test.expect), len(resp))
 	}
 
 	for _, ident := range idents {

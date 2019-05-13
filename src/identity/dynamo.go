@@ -46,11 +46,12 @@ func (i Identity)CreateEntry() (Identity, error) {
 		ExpressionAttributeNames: map[string]*string{
 			"#IDENTIFIER": aws.String("identifier"),
 		},
+		ReturnValues: aws.String("ALL_OLD"),
 	}
 	_, putErr := svc.PutItem(input)
 	if putErr != nil {
-		if awerr, ok := putErr.(awserr.Error); ok {
-			switch awerr.Code(){
+		if awsErr, ok := putErr.(awserr.Error); ok {
+			switch awsErr.Code(){
 			case dynamodb.ErrCodeConditionalCheckFailedException:
 				return Identity{}, errors.New("identity already exists")
 			}
@@ -85,30 +86,7 @@ func (i Identity)RetrieveEntry() (Identity, error) {
 		return Identity{}, err
 	}
 
-
-	regLen := len(result.Item["registrations"].L)
-	regs := []Registration{}
-	if regLen >= 1 {
-		for j := 0; j < regLen; j++ {
-			ritem := result.Item["registrations"].L[j].M
-
-			reg := Registration{
-				Plate: *ritem["plate"].S,
-				Oversized: *ritem["oversized"].BOOL,
-				VehicleType: GetVehicleType(*ritem["vehicleType"].S),
-			}
-
-			regs = append(regs, reg)
-		}
-	}
-
-	return Identity{
-		ID: *result.Item["identifier"].S,
-		Phone: *result.Item["phone"].S,
-		Email: *result.Item["email"].S,
-		Company: *result.Item["company"].BOOL,
-		Registrations: regs,
-	}, nil
+	return convertDynamoToIdentity(result.Item)
 }
 
 // UpdateEntry entity
@@ -127,40 +105,91 @@ func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 	}
 
 	svc := dynamodb.New(s)
-	input := &dynamodb.UpdateItemInput{
-		ExpressionAttributeNames: map[string]*string{
-			"#EMAIL": aws.String("email"),
-			"#PHONE": aws.String("phone"),
-			"#COMPANY": aws.String("company"),
-			"#REGISTRATIONS": aws.String("registrations"),
-		},
-		ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
-			":email": {
-				S: aws.String(n.Email),
+
+
+	input := &dynamodb.UpdateItemInput{}
+	if n.Email != "" {
+		input = &dynamodb.UpdateItemInput{
+			ExpressionAttributeNames: map[string]*string{
+				"#EMAIL": aws.String("email"),
 			},
-			":phone": {
-				S: aws.String(n.Phone),
+			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+				":email": {
+					S: aws.String(n.Email),
+				},
 			},
-			":company": {
-				BOOL: aws.Bool(n.Company),
+			Key: map[string]*dynamodb.AttributeValue{
+				"identifier": {
+					S: aws.String(i.ID),
+				},
 			},
-			":registrations": &regs,
-		},
-		Key: map[string]*dynamodb.AttributeValue{
-			"identifier": {
-				S: aws.String(i.ID),
+			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+			ReturnValues: aws.String("ALL_NEW"),
+			UpdateExpression: aws.String("SET #EMAIL = :email"),
+		}
+	} else if n.Phone != "" {
+		input = &dynamodb.UpdateItemInput{
+			ExpressionAttributeNames: map[string]*string{
+				"#PHONE": aws.String("phone"),
 			},
-		},
-		TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
-		ReturnValues: aws.String("ALL_NEW"),
-		UpdateExpression: aws.String("SET #EMAIL = :email, #PHONE = :phone, #COMPANY = :company, #REGISTRATIONS = :registrations"),
+			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+				":phone": {
+					S: aws.String(n.Phone),
+				},
+			},
+			Key: map[string]*dynamodb.AttributeValue{
+				"identifier": {
+					S: aws.String(i.ID),
+				},
+			},
+			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+			ReturnValues: aws.String("ALL_NEW"),
+			UpdateExpression: aws.String("SET #PHONE = :phone"),
+		}
+	} else if len(n.Registrations) >= 1 {
+		input = &dynamodb.UpdateItemInput{
+			ExpressionAttributeNames: map[string]*string{
+				"#REGISTRATIONS": aws.String("registrations"),
+			},
+			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+				":registrations": &regs,
+			},
+			Key: map[string]*dynamodb.AttributeValue{
+				"identifier": {
+					S: aws.String(i.ID),
+				},
+			},
+			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+			ReturnValues: aws.String("ALL_NEW"),
+			UpdateExpression: aws.String("SET #REGISTRATIONS = :registrations"),
+		}
+	} else if i.Company != n.Company {
+		input = &dynamodb.UpdateItemInput{
+			ExpressionAttributeNames: map[string]*string{
+				"#COMPANY": aws.String("company"),
+			},
+			ExpressionAttributeValues: map[string]*dynamodb.AttributeValue{
+				":company": {
+					BOOL: aws.Bool(n.Company),
+				},
+			},
+			Key: map[string]*dynamodb.AttributeValue{
+				"identifier": {
+					S: aws.String(i.ID),
+				},
+			},
+			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+			ReturnValues: aws.String("ALL_NEW"),
+			UpdateExpression: aws.String("SET #COMPANY = :company"),
+		}
 	}
-	_, updateErr := svc.UpdateItem(input)
+
+	ret, updateErr := svc.UpdateItem(input)
 	if updateErr != nil {
 		return Identity{}, updateErr
 	}
 
-	return n, nil
+	return convertDynamoToIdentity(ret.Attributes)
 }
 
 // DeleteEntry entity
@@ -258,31 +287,9 @@ func (i Identity)ScanEntry() (Identity, error) {
 
 	if len(result.Items) == 1 {
 		item := result.Items[0]
-
-		ident := Identity{
-			ID: *item["identifier"].S,
-			Email: *item["email"].S,
-			Phone: *item["phone"].S,
-			Company: *item["company"].BOOL,
-		}
-
-		regLen := len(item["registrations"].L)
-		if regLen >= 1 {
-			regs := []Registration{}
-
-			for j := 0; j < regLen; j++ {
-				ritem := item["registrations"].L[j].M
-
-				reg := Registration{
-					Plate: *ritem["plate"].S,
-					Oversized: *ritem["oversized"].BOOL,
-					VehicleType: GetVehicleType(*ritem["vehicleType"].S),
-				}
-
-				regs = append(regs, reg)
-			}
-
-			ident.Registrations = regs
+		ident, err := convertDynamoToIdentity(item)
+		if err != nil {
+			return Identity{}, errors.New("could't return ident")
 		}
 
 		return ident, nil
@@ -321,33 +328,10 @@ func (i Identity)ScanEntries() ([]Identity, error) {
 
 		for i := 0; i < itemLen; i++ {
 			item := result.Items[i]
-
-			ident := Identity{
-				ID: *item["identifier"].S,
-				Email: *item["email"].S,
-				Phone: *item["phone"].S,
-				Company: *item["company"].BOOL,
+			ident, err := convertDynamoToIdentity(item)
+			if err != nil {
+				return idents, errors.New("couldn't return idents")
 			}
-
-			regLen := len(item["registrations"].L)
-			if regLen >= 1 {
-				regs := []Registration{}
-
-				for j := 0; j < regLen; j++ {
-					ritem := item["registrations"].L[j].M
-
-					reg := Registration{
-						Plate: *ritem["plate"].S,
-						Oversized: *ritem["oversized"].BOOL,
-						VehicleType: GetVehicleType(*ritem["vehicleType"].S),
-					}
-
-					regs = append(regs, reg)
-				}
-
-				ident.Registrations = regs
-			}
-
 			idents = append(idents, ident)
 		}
 
@@ -388,4 +372,71 @@ func convertRegistrationsToDynamo(regs []Registration) (dynamodb.AttributeValue,
 	}
 
 	return ret, nil
+}
+
+func convertDynamoToRegistration(reg *dynamodb.AttributeValue) (Registration, error) {
+	ret := Registration{}
+
+	for key, value := range reg.M {
+		switch key {
+		case "plate":
+			ret.Plate = *value.S
+		case "vehicleType":
+			ret.VehicleType = GetVehicleType(*value.S)
+		case "oversized":
+			ret.Oversized = *value.BOOL
+		}
+	}
+	if ret.Plate != "" {
+		return ret, nil
+	}
+
+	return Registration{}, errors.New("couldn't convert to registration")
+}
+
+func convertDynamoToRegistrations(items []*dynamodb.AttributeValue) ([]Registration, error) {
+	ret := []Registration{}
+
+	for _, item := range items {
+		reg, err := convertDynamoToRegistration(item)
+		if err != nil {
+			return []Registration{}, err
+		}
+
+		ret = append(ret, reg)
+	}
+
+	return ret, nil
+}
+
+func convertDynamoToIdentity(items map[string]*dynamodb.AttributeValue) (Identity, error) {
+	ret := Identity{}
+	for key, value := range items {
+		switch key {
+		case "registrations":
+			regs, err := convertDynamoToRegistrations(value.L)
+			if err != nil {
+				return Identity{}, err
+			}
+			ret.Registrations = regs
+
+		case "company":
+			ret.Company = *value.BOOL
+
+		case "phone":
+			ret.Phone = *value.S
+
+		case "email":
+			ret.Email = *value.S
+
+		case "identifier":
+			ret.ID = *value.S
+		}
+	}
+
+	if ret.ID != "" {
+		return ret, nil
+	}
+
+	return Identity{}, errors.New("couldn't convert to identity")
 }
