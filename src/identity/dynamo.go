@@ -298,7 +298,7 @@ func (i Identity)ScanEntry() (Identity, error) {
 	return Identity{}, nil
 }
 
-// ScanAll
+// ScanAll scan all the entries
 func ScanAll() ([]Identity, error) {
 	i := Identity{}
 	return i.ScanEntries()

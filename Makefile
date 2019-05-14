@@ -39,5 +39,7 @@ docker:
 		--build-arg AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID) \
 		--build-arg AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY) \
 		--build-arg DATABASE_DYNAMO=$(DATABASE_DYNAMO) \
+		--build-arg SERVICE_NAME=$(SERVICENAME) \
+		--build-arg SERVICE_DEPENDENCIES=$(SERVICE_DEPENDENCIES) \
 		-f Dockerfile .
 

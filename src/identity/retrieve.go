@@ -28,6 +28,7 @@ func (i Identity)RetrievePlate(request Identity) (Identity, error) {
 	return Identity{}, errors.New("no plate match")
 }
 
+// RetrieveAll get all the identities
 func RetrieveAll() ([]Identity, error) {
 	i := Identity{}
 	return i.ScanEntries()
