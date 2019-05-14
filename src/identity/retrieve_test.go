@@ -18,7 +18,7 @@ func TestRetrieveAll(t *testing.T) {
 		}
 	}
 
-	create := []struct{
+	create := []struct {
 		identity.Identity
 	}{
 		{
@@ -27,7 +27,7 @@ func TestRetrieveAll(t *testing.T) {
 				Phone: "123",
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
 					},
 				},
@@ -39,7 +39,7 @@ func TestRetrieveAll(t *testing.T) {
 				Phone: "456",
 				Registrations: []identity.Registration{
 					{
-						Plate: "test456",
+						Plate:       "test456",
 						VehicleType: identity.VehicleTypeBike,
 					},
 				},
@@ -57,13 +57,13 @@ func TestRetrieveAll(t *testing.T) {
 		idents = append(idents, resp)
 	}
 
-	tests := []struct{
+	tests := []struct {
 		expect []identity.Identity
-		err error
+		err    error
 	}{
 		{
 			expect: idents,
-			err: nil,
+			err:    nil,
 		},
 	}
 
@@ -89,7 +89,7 @@ func TestIdentity_Retrieve(t *testing.T) {
 		}
 	}
 
-	create := []struct{
+	create := []struct {
 		identity.Identity
 	}{
 		{
@@ -108,10 +108,10 @@ func TestIdentity_Retrieve(t *testing.T) {
 		},
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		expect identity.Identity
-		err error
+		expect  identity.Identity
+		err     error
 	}{
 		{
 			request: identity.Identity{
@@ -123,15 +123,15 @@ func TestIdentity_Retrieve(t *testing.T) {
 				},
 			},
 			expect: identity.Identity{
-				ID: "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
-				Email: "test@test.test",
-				Phone: "123",
+				ID:      "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
+				Email:   "test@test.test",
+				Phone:   "123",
 				Company: false,
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
@@ -147,14 +147,14 @@ func TestIdentity_Retrieve(t *testing.T) {
 				},
 			},
 			expect: identity.Identity{},
-			err: errors.New("no plate match"),
+			err:    errors.New("no plate match"),
 		},
 		{
 			request: identity.Identity{
 				Email: "test@test.test",
 			},
 			expect: identity.Identity{},
-			err: errors.New("need at least 1 plate"),
+			err:    errors.New("need at least 1 plate"),
 		},
 	}
 
@@ -179,7 +179,7 @@ func TestIdentity_Retrieve(t *testing.T) {
 	// Delete
 	for _, test := range created {
 		if test.ID != "" {
-			_, err  := test.DeleteEntry()
+			_, err := test.DeleteEntry()
 			if err != nil {
 				fmt.Println(fmt.Errorf("retrive delete err: %v", err))
 			}

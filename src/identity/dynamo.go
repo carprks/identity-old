@@ -10,9 +10,9 @@ import (
 )
 
 // CreateEntry entity
-func (i Identity)CreateEntry() (Identity, error) {
+func (i Identity) CreateEntry() (Identity, error) {
 	s, err := session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("AWS_DB_REGION")),
+		Region:   aws.String(os.Getenv("AWS_DB_REGION")),
 		Endpoint: aws.String(os.Getenv("AWS_DB_ENDPOINT")),
 	})
 	if err != nil {
@@ -51,7 +51,7 @@ func (i Identity)CreateEntry() (Identity, error) {
 	_, putErr := svc.PutItem(input)
 	if putErr != nil {
 		if awsErr, ok := putErr.(awserr.Error); ok {
-			switch awsErr.Code(){
+			switch awsErr.Code() {
 			case dynamodb.ErrCodeConditionalCheckFailedException:
 				return Identity{}, errors.New("identity already exists")
 			}
@@ -64,9 +64,9 @@ func (i Identity)CreateEntry() (Identity, error) {
 }
 
 // RetrieveEntry entity
-func (i Identity)RetrieveEntry() (Identity, error) {
+func (i Identity) RetrieveEntry() (Identity, error) {
 	s, err := session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("AWS_DB_REGION")),
+		Region:   aws.String(os.Getenv("AWS_DB_REGION")),
 		Endpoint: aws.String(os.Getenv("AWS_DB_ENDPOINT")),
 	})
 	if err != nil {
@@ -90,9 +90,9 @@ func (i Identity)RetrieveEntry() (Identity, error) {
 }
 
 // UpdateEntry entity
-func (i Identity)UpdateEntry(n Identity) (Identity, error) {
+func (i Identity) UpdateEntry(n Identity) (Identity, error) {
 	s, err := session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("AWS_DB_REGION")),
+		Region:   aws.String(os.Getenv("AWS_DB_REGION")),
 		Endpoint: aws.String(os.Getenv("AWS_DB_ENDPOINT")),
 	})
 	if err != nil {
@@ -105,7 +105,6 @@ func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 	}
 
 	svc := dynamodb.New(s)
-
 
 	input := &dynamodb.UpdateItemInput{}
 	if n.Email != "" {
@@ -123,8 +122,8 @@ func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 					S: aws.String(i.ID),
 				},
 			},
-			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
-			ReturnValues: aws.String("ALL_NEW"),
+			TableName:        aws.String(os.Getenv("AWS_DB_TABLE")),
+			ReturnValues:     aws.String("ALL_NEW"),
 			UpdateExpression: aws.String("SET #EMAIL = :email"),
 		}
 	} else if n.Phone != "" {
@@ -142,8 +141,8 @@ func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 					S: aws.String(i.ID),
 				},
 			},
-			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
-			ReturnValues: aws.String("ALL_NEW"),
+			TableName:        aws.String(os.Getenv("AWS_DB_TABLE")),
+			ReturnValues:     aws.String("ALL_NEW"),
 			UpdateExpression: aws.String("SET #PHONE = :phone"),
 		}
 	} else if len(n.Registrations) >= 1 {
@@ -159,8 +158,8 @@ func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 					S: aws.String(i.ID),
 				},
 			},
-			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
-			ReturnValues: aws.String("ALL_NEW"),
+			TableName:        aws.String(os.Getenv("AWS_DB_TABLE")),
+			ReturnValues:     aws.String("ALL_NEW"),
 			UpdateExpression: aws.String("SET #REGISTRATIONS = :registrations"),
 		}
 	} else if i.Company != n.Company {
@@ -178,8 +177,8 @@ func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 					S: aws.String(i.ID),
 				},
 			},
-			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
-			ReturnValues: aws.String("ALL_NEW"),
+			TableName:        aws.String(os.Getenv("AWS_DB_TABLE")),
+			ReturnValues:     aws.String("ALL_NEW"),
 			UpdateExpression: aws.String("SET #COMPANY = :company"),
 		}
 	}
@@ -193,9 +192,9 @@ func (i Identity)UpdateEntry(n Identity) (Identity, error) {
 }
 
 // DeleteEntry entity
-func (i Identity)DeleteEntry() (Identity, error) {
+func (i Identity) DeleteEntry() (Identity, error) {
 	s, err := session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("AWS_DB_REGION")),
+		Region:   aws.String(os.Getenv("AWS_DB_REGION")),
 		Endpoint: aws.String(os.Getenv("AWS_DB_ENDPOINT")),
 	})
 	if err != nil {
@@ -219,7 +218,7 @@ func (i Identity)DeleteEntry() (Identity, error) {
 }
 
 // ScanEntry entry
-func (i Identity)ScanEntry() (Identity, error) {
+func (i Identity) ScanEntry() (Identity, error) {
 	if len(i.Registrations) == 0 {
 		return Identity{}, errors.New("need at least 1 plate")
 	}
@@ -237,7 +236,7 @@ func (i Identity)ScanEntry() (Identity, error) {
 				},
 			},
 			FilterExpression: aws.String("#PHONE = :phone"),
-			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+			TableName:        aws.String(os.Getenv("AWS_DB_TABLE")),
 		}
 	} else if i.Email != "" {
 		input = &dynamodb.ScanInput{
@@ -250,7 +249,7 @@ func (i Identity)ScanEntry() (Identity, error) {
 				},
 			},
 			FilterExpression: aws.String("#EMAIL = :email"),
-			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+			TableName:        aws.String(os.Getenv("AWS_DB_TABLE")),
 		}
 	} else if i.Phone != "" && i.Email != "" {
 		input = &dynamodb.ScanInput{
@@ -267,13 +266,12 @@ func (i Identity)ScanEntry() (Identity, error) {
 				},
 			},
 			FilterExpression: aws.String("#PHONE = :phone AND #EMAIL = :email"),
-			TableName: aws.String(os.Getenv("AWS_DB_TABLE")),
+			TableName:        aws.String(os.Getenv("AWS_DB_TABLE")),
 		}
 	}
 
-
 	s, err := session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("AWS_DB_REGION")),
+		Region:   aws.String(os.Getenv("AWS_DB_REGION")),
 		Endpoint: aws.String(os.Getenv("AWS_DB_ENDPOINT")),
 	})
 	if err != nil {
@@ -305,9 +303,9 @@ func ScanAll() ([]Identity, error) {
 }
 
 // ScanEntries entities
-func (i Identity)ScanEntries() ([]Identity, error) {
+func (i Identity) ScanEntries() ([]Identity, error) {
 	s, err := session.NewSession(&aws.Config{
-		Region: aws.String(os.Getenv("AWS_DB_REGION")),
+		Region:   aws.String(os.Getenv("AWS_DB_REGION")),
 		Endpoint: aws.String(os.Getenv("AWS_DB_ENDPOINT")),
 	})
 	if err != nil {

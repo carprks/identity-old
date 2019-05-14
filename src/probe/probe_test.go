@@ -1,15 +1,15 @@
 package probe_test
 
 import (
+	"github.com/carprks/identity/src/probe"
 	"github.com/stretchr/testify/assert"
-	"main/src/probe"
 	"testing"
 )
 
 func TestProbe(t *testing.T) {
-	tests := []struct{
+	tests := []struct {
 		expect probe.Healthy
-		err error
+		err    error
 	}{
 		{
 			expect: probe.Healthy{

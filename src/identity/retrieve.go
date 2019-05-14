@@ -3,8 +3,8 @@ package identity
 import "errors"
 
 // Retrieve get an identity
-func (i Identity)Retrieve() (Identity, error) {
-	if i.ID != ""{
+func (i Identity) Retrieve() (Identity, error) {
+	if i.ID != "" {
 		return i.RetrieveEntry()
 	}
 
@@ -16,7 +16,7 @@ func (i Identity)Retrieve() (Identity, error) {
 }
 
 // RetrievePlate for an identity identified by email/phone
-func (i Identity)RetrievePlate(request Identity) (Identity, error) {
+func (i Identity) RetrievePlate(request Identity) (Identity, error) {
 	reqPlate := request.Registrations[0]
 
 	for _, plate := range i.Registrations {

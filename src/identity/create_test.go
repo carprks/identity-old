@@ -23,34 +23,34 @@ func TestIdentity_Create(t *testing.T) {
 		}
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		expect identity.Identity
-		err error
+		expect  identity.Identity
+		err     error
 	}{
 		{
 			request: identity.Identity{
-				Email: "test@test.test",
-				Phone: "123",
+				Email:   "test@test.test",
+				Phone:   "123",
 				Company: false,
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
 			expect: identity.Identity{
-				ID: "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
-				Email: "test@test.test",
-				Phone: "123",
+				ID:      "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
+				Email:   "test@test.test",
+				Phone:   "123",
 				Company: false,
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
@@ -58,43 +58,43 @@ func TestIdentity_Create(t *testing.T) {
 		},
 		{
 			request: identity.Identity{
-				Email: "test@test.test",
-				Phone: "123",
+				Email:   "test@test.test",
+				Phone:   "123",
 				Company: false,
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
 			expect: identity.Identity{},
-			err: errors.New("identity already exists"),
+			err:    errors.New("identity already exists"),
 		},
 		{
 			request: identity.Identity{
-				Email: "test.company@test.test",
-				Phone: "123",
+				Email:   "test.company@test.test",
+				Phone:   "123",
 				Company: true,
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
 			expect: identity.Identity{
-				ID: "b0635b33-38d0-5bee-90f9-af8a239826fe",
-				Email: "test.company@test.test",
-				Phone: "123",
+				ID:      "b0635b33-38d0-5bee-90f9-af8a239826fe",
+				Email:   "test.company@test.test",
+				Phone:   "123",
 				Company: true,
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
@@ -129,35 +129,35 @@ func TestCreate(t *testing.T) {
 		}
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		expect identity.Response
-		err error
+		expect  identity.Response
+		err     error
 	}{
 		{
 			request: identity.Identity{
-				Email: "test@test.test",
-				Phone: "123",
+				Email:   "test@test.test",
+				Phone:   "123",
 				Company: false,
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
 			expect: identity.Response{
 				Identity: identity.Identity{
-					ID: "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
-					Email: "test@test.test",
-					Phone: "123",
+					ID:      "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
+					Email:   "test@test.test",
+					Phone:   "123",
 					Company: false,
 					Registrations: []identity.Registration{
 						{
-							Plate: "test123",
+							Plate:       "test123",
 							VehicleType: identity.VehicleTypeCar,
-							Oversized: false,
+							Oversized:   false,
 						},
 					},
 				},
@@ -166,28 +166,28 @@ func TestCreate(t *testing.T) {
 		},
 		{
 			request: identity.Identity{
-				Email: "test.company@test.test",
-				Phone: "123",
+				Email:   "test.company@test.test",
+				Phone:   "123",
 				Company: true,
 				Registrations: []identity.Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
 			expect: identity.Response{
 				Identity: identity.Identity{
-					ID: "b0635b33-38d0-5bee-90f9-af8a239826fe",
-					Email: "test.company@test.test",
-					Phone: "123",
+					ID:      "b0635b33-38d0-5bee-90f9-af8a239826fe",
+					Email:   "test.company@test.test",
+					Phone:   "123",
 					Company: true,
 					Registrations: []identity.Registration{
 						{
-							Plate: "test123",
+							Plate:       "test123",
 							VehicleType: identity.VehicleTypeCar,
-							Oversized: false,
+							Oversized:   false,
 						},
 					},
 				},

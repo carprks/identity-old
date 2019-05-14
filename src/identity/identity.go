@@ -2,14 +2,14 @@ package identity
 
 import (
 	"fmt"
-	"strings"
 	"github.com/satori/go.uuid"
+	"strings"
 )
 
 // Response struct
 type Response struct {
 	Identity Identity `json:"identity,omitempty"`
-	Error error `json:"error,omitempty"`
+	Error    error    `json:"error,omitempty"`
 }
 
 // Identity struct
@@ -45,7 +45,7 @@ const (
 	VehicleTypeUnknown VehicleType = "Unknown"
 )
 
-func (v VehicleType)convertToString() string {
+func (v VehicleType) convertToString() string {
 	switch v {
 	case VehicleTypeBike:
 		return string(v)
@@ -75,7 +75,7 @@ func GetVehicleType(s string) VehicleType {
 	return VehicleTypeUnknown
 }
 
-func (i Identity)createIdentifier() string {
+func (i Identity) createIdentifier() string {
 	if i.Company {
 		u := uuid.NewV5(uuid.NamespaceURL, fmt.Sprintf("https://identity.carprk.com/company/%s:%s", i.Email, i.Phone))
 		return u.String()

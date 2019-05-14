@@ -11,8 +11,8 @@ import (
 // HTTP the request as done by routing
 func HTTP(w http.ResponseWriter, r *http.Request) {
 	hc := HealthCheck{
-		Name: os.Getenv("SERVICE_NAME"),
-		URL: r.Host,
+		Name:         os.Getenv("SERVICE_NAME"),
+		URL:          r.Host,
 		Dependencies: os.Getenv("SERVICE_DEPENDENCIES"),
 	}
 
@@ -39,9 +39,9 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 // Check do the health check itself
 func (h HealthCheck) Check() (Health, error) {
 	health := Health{
-		Name: h.Name,
-		URL: h.URL,
-		Status: HealthFail,
+		Name:         h.Name,
+		URL:          h.URL,
+		Status:       HealthFail,
 		Dependencies: nil,
 	}
 
@@ -103,8 +103,8 @@ func (d Dependency) check() (Health, error) {
 // ping checks
 func (d Dependency) ping() (Health, error) {
 	h := Health{
-		Name: d.Name,
-		URL: d.URL,
+		Name:   d.Name,
+		URL:    d.URL,
 		Status: HealthFail,
 	}
 
@@ -124,7 +124,7 @@ func (d Dependency) curl() (Health, error) {
 	p, err := http.Get(d.URL)
 	if err != nil {
 		h = Health{
-			URL: d.URL,
+			URL:    d.URL,
 			Status: HealthFail,
 		}
 		return h, err
@@ -132,7 +132,7 @@ func (d Dependency) curl() (Health, error) {
 	b, err := ioutil.ReadAll(p.Body)
 	if err != nil {
 		h = Health{
-			URL: d.URL,
+			URL:    d.URL,
 			Status: HealthFail,
 		}
 		return h, err

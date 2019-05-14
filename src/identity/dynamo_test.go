@@ -19,28 +19,28 @@ func TestIdentity_CreateEntry(t *testing.T) {
 	}
 
 	ident := identity.Identity{
-		ID: "testDynamo",
+		ID:      "testDynamo",
 		Company: false,
-		Phone: "123",
-		Email: "testDynamo@test.test",
+		Phone:   "123",
+		Email:   "testDynamo@test.test",
 		Registrations: []identity.Registration{
 			{
-				Plate: "test1234",
+				Plate:       "test1234",
 				VehicleType: identity.VehicleTypeCar,
-				Oversized: false,
+				Oversized:   false,
 			},
 		},
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		expect identity.Identity
-		err error
+		expect  identity.Identity
+		err     error
 	}{
 		{
 			request: ident,
-			expect: ident,
-			err: nil,
+			expect:  ident,
+			err:     nil,
 		},
 	}
 
@@ -63,41 +63,41 @@ func TestIdentity_UpdateEntry(t *testing.T) {
 	}
 
 	identOrig := identity.Identity{
-		ID: "testDynamo",
+		ID:      "testDynamo",
 		Company: false,
-		Phone: "123",
-		Email: "testDynamo@test.test",
+		Phone:   "123",
+		Email:   "testDynamo@test.test",
 		Registrations: []identity.Registration{
 			{
-				Plate: "test1234",
+				Plate:       "test1234",
 				VehicleType: identity.VehicleTypeCar,
-				Oversized: false,
+				Oversized:   false,
 			},
 		},
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		update identity.Identity
-		expect identity.Identity
-		err error
+		update  identity.Identity
+		expect  identity.Identity
+		err     error
 	}{
 		{
 			request: identOrig,
 			update: identity.Identity{
-				ID: "testDynamo",
+				ID:      "testDynamo",
 				Company: true,
 			},
 			expect: identity.Identity{
-				ID: "testDynamo",
+				ID:      "testDynamo",
 				Company: true,
-				Phone: "123",
-				Email: "testDynamo@test.test",
+				Phone:   "123",
+				Email:   "testDynamo@test.test",
 				Registrations: []identity.Registration{
 					{
-						Plate: "test1234",
+						Plate:       "test1234",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
@@ -106,19 +106,19 @@ func TestIdentity_UpdateEntry(t *testing.T) {
 		{
 			request: identOrig,
 			update: identity.Identity{
-				ID: "testDynamo",
+				ID:    "testDynamo",
 				Email: "testDynamoUpdate@test.test",
 			},
 			expect: identity.Identity{
-				ID: "testDynamo",
+				ID:      "testDynamo",
 				Company: true,
-				Phone: "123",
-				Email: "testDynamoUpdate@test.test",
+				Phone:   "123",
+				Email:   "testDynamoUpdate@test.test",
 				Registrations: []identity.Registration{
 					{
-						Plate: "test1234",
+						Plate:       "test1234",
 						VehicleType: identity.VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
@@ -129,20 +129,20 @@ func TestIdentity_UpdateEntry(t *testing.T) {
 			update: identity.Identity{
 				Registrations: []identity.Registration{
 					{
-						Plate: "test12345",
+						Plate:       "test12345",
 						VehicleType: identity.VehicleTypeBike,
-						Oversized: true,
+						Oversized:   true,
 					},
 				},
 			},
 			expect: identity.Identity{
-				ID:"testDynamo",
-				Email:"testDynamoUpdate@test.test",
-				Phone:"123",
-				Company:true,
+				ID:      "testDynamo",
+				Email:   "testDynamoUpdate@test.test",
+				Phone:   "123",
+				Company: true,
 				Registrations: []identity.Registration{
 					{
-						VehicleType:"Motorbike", Oversized:true, Plate:"test12345",
+						VehicleType: "Motorbike", Oversized: true, Plate: "test12345",
 					},
 				},
 			},
@@ -175,17 +175,17 @@ func TestIdentity_ScanEntry(t *testing.T) {
 		}
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		expect identity.Identity
-		err error
+		expect  identity.Identity
+		err     error
 	}{
 		{
 			request: identity.Identity{
 				Email: "testDynamo@test.test",
 			},
 			expect: identity.Identity{},
-			err: errors.New("need at least 1 plate"),
+			err:    errors.New("need at least 1 plate"),
 		},
 		{
 			request: identity.Identity{
@@ -231,15 +231,15 @@ func TestIdentity_ScanEntries(t *testing.T) {
 		}
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		expect int
-		err error
+		expect  int
+		err     error
 	}{
 		{
 			request: identity.Identity{},
-			expect: 1,
-			err: nil,
+			expect:  1,
+			err:     nil,
 		},
 	}
 
@@ -259,28 +259,28 @@ func TestIdentity_RetrieveEntry(t *testing.T) {
 	}
 
 	ident := identity.Identity{
-		ID: "testDynamo",
+		ID:      "testDynamo",
 		Company: false,
-		Phone: "123",
-		Email: "testDynamo@test.test",
+		Phone:   "123",
+		Email:   "testDynamo@test.test",
 		Registrations: []identity.Registration{
 			{
-				Plate: "test1234",
+				Plate:       "test1234",
 				VehicleType: identity.VehicleTypeCar,
-				Oversized: false,
+				Oversized:   false,
 			},
 		},
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		expect identity.Identity
-		err error
+		expect  identity.Identity
+		err     error
 	}{
 		{
 			request: ident,
-			expect: ident,
-			err: nil,
+			expect:  ident,
+			err:     nil,
 		},
 	}
 
@@ -300,28 +300,28 @@ func TestIdentity_DeleteEntry(t *testing.T) {
 	}
 
 	ident := identity.Identity{
-		ID: "testDynamo",
+		ID:      "testDynamo",
 		Company: false,
-		Phone: "123",
-		Email: "testDynamo@test.test",
+		Phone:   "123",
+		Email:   "testDynamo@test.test",
 		Registrations: []identity.Registration{
 			{
-				Plate: "test1234",
+				Plate:       "test1234",
 				VehicleType: identity.VehicleTypeCar,
-				Oversized: false,
+				Oversized:   false,
 			},
 		},
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request identity.Identity
-		expect identity.Identity
-		err error
+		expect  identity.Identity
+		err     error
 	}{
 		{
 			request: ident,
-			expect: identity.Identity{},
-			err: nil,
+			expect:  identity.Identity{},
+			err:     nil,
 		},
 	}
 
@@ -355,13 +355,13 @@ func TestScanAll(t *testing.T) {
 		}
 	}
 
-	tests := []struct{
+	tests := []struct {
 		expect []identity.Identity
-		err error
+		err    error
 	}{
 		{
 			expect: idents,
-			err: nil,
+			err:    nil,
 		},
 	}
 	for _, test := range tests {

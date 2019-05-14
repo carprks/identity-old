@@ -31,7 +31,7 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // Probe responds with a healthy model
-func Probe() (Healthy, error){
+func Probe() (Healthy, error) {
 	return Healthy{
 		Status: "pass",
 	}, nil

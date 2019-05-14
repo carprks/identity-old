@@ -16,20 +16,20 @@ func TestIdentity_Update(t *testing.T) {
 		}
 	}
 
-	create := []struct{
+	create := []struct {
 		ident Identity
-		err error
+		err   error
 	}{
 		{
 			ident: Identity{
-				Email: "test@test.test",
-				Phone: "123",
+				Email:   "test@test.test",
+				Phone:   "123",
 				Company: false,
 				Registrations: []Registration{
 					{
-						Plate: "test123",
+						Plate:       "test123",
 						VehicleType: VehicleTypeCar,
-						Oversized: false,
+						Oversized:   false,
 					},
 				},
 			},
@@ -41,26 +41,26 @@ func TestIdentity_Update(t *testing.T) {
 		created, _ = test.ident.Create()
 	}
 
-	tests := []struct{
+	tests := []struct {
 		request Identity
-		expect Identity
-		err error
+		expect  Identity
+		err     error
 	}{
 		{
 			request: Identity{
-				ID: created.ID,
+				ID:    created.ID,
 				Email: "testUpdate@test.test",
 			},
 			expect: Identity{
-				ID: "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
-				Email: "testUpdate@test.test",
-				Phone: "123",
+				ID:      "fde8ffe8-75c6-5448-b44e-b4c81526a1eb",
+				Email:   "testUpdate@test.test",
+				Phone:   "123",
 				Company: false,
 				Registrations: []Registration{
 					{
 						VehicleType: VehicleTypeCar,
-						Oversized: false,
-						Plate: "test123",
+						Oversized:   false,
+						Plate:       "test123",
 					},
 				},
 			},

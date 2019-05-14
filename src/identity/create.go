@@ -9,7 +9,7 @@ import (
 )
 
 // Create crete identity
-func (i Identity)Create() (Identity, error) {
+func (i Identity) Create() (Identity, error) {
 	i.ID = i.createIdentifier()
 
 	if len(i.Registrations) >= 1 {

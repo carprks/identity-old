@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/carprks/identity/src/healthcheck"
+	"github.com/carprks/identity/src/identity"
+	"github.com/carprks/identity/src/probe"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	"main/src/healthcheck"
-	"main/src/identity"
-	"main/src/probe"
 	"net/http"
 	"os"
 )

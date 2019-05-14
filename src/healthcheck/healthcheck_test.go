@@ -1,27 +1,27 @@
 package healthcheck_test
 
 import (
+	"github.com/carprks/identity/src/healthcheck"
 	"github.com/stretchr/testify/assert"
-	"main/src/healthcheck"
 	"testing"
 )
 
 func TestHealthCheck_Check(t *testing.T) {
-	tests := []struct{
-		request healthcheck.HealthCheck
+	tests := []struct {
+		request  healthcheck.HealthCheck
 		response healthcheck.Health
-		err error
+		err      error
 	}{
 		{
 			request: healthcheck.HealthCheck{
-				Name: "test1",
-				URL: "test1.com",
+				Name:         "test1",
+				URL:          "test1.com",
 				Dependencies: "",
 			},
 			response: healthcheck.Health{
-				Name: "test1",
-				URL: "test1.com",
-				Status: healthcheck.HealthPass,
+				Name:         "test1",
+				URL:          "test1.com",
+				Status:       healthcheck.HealthPass,
 				Dependencies: nil,
 			},
 			err: nil,

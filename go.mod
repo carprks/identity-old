@@ -1,4 +1,4 @@
-module main
+module github.com/carprks/identity
 
 go 1.12
 
