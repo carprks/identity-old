@@ -29,6 +29,8 @@ pipeline:
         - AWS_ACCESS_KEY_ID=$AWS_KEY
         - AWS_SECRET_ACCESS_KEY=$AWS_SECRET
         - DATABASE_DYNAMO=true
+        - SERVICE_NAME=identity
+        - SERVICE_DEPENDENCIES={"dependencies":[{"url":"$AWS_DB_ENDPOINT","name":"dynamo","ping":true}]}
   publish:
     image: plugins/ecr
     repo:
