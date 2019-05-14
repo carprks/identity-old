@@ -3,9 +3,9 @@ package identity_test
 import (
 	"errors"
 	"fmt"
+	"github.com/carprks/identity/src/identity"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"main/src/identity"
 	"os"
 	"testing"
 )
