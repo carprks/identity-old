@@ -16,6 +16,7 @@ func _main(args []string) int {
 	if len(args) >= 1 {
 		if args[0] == "localDev" {
 			godotenv.Load()
+			fmt.Println("Running LocalDev")
 		}
 	}
 

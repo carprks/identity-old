@@ -2,10 +2,10 @@ package healthcheck
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 )
 
 // HTTP the request as done by routing
@@ -45,6 +45,7 @@ func (h HealthCheck) Check() (Health, error) {
 		Dependencies: nil,
 	}
 
+	health.Status = HealthPass
 	if h.Dependencies != "" {
 		deps, err := h.getDependencies()
 		if err != nil {
@@ -62,7 +63,13 @@ func (h HealthCheck) Check() (Health, error) {
 
 		health.Dependencies = checkedDeps
 	}
-	health.Status = HealthPass
+
+	// now set to failed if a dependency failed
+	for _, dep := range health.Dependencies {
+		if dep.Status == HealthFail {
+			health.Status = HealthFail
+		}
+	}
 
 	return health, nil
 }
@@ -80,6 +87,10 @@ func (h HealthCheck) getDependencies() (Dependencies, error) {
 
 // check the dependency status
 func (d Dependency) check() (Health, error) {
+	if strings.Contains(d.URL, "$") {
+		d.URL = os.Getenv(d.URL[1:])
+	}
+
 	// Ping check
 	if d.Ping {
 		return d.ping()
@@ -110,12 +121,10 @@ func (d Dependency) ping() (Health, error) {
 // curl checks
 func (d Dependency) curl() (Health, error) {
 	h := Health{}
-
-	url := fmt.Sprintf("https://%s/healthcheck", d.URL)
-	p, err := http.Get(url)
+	p, err := http.Get(d.URL)
 	if err != nil {
 		h = Health{
-			URL: url,
+			URL: d.URL,
 			Status: HealthFail,
 		}
 		return h, err
@@ -123,13 +132,13 @@ func (d Dependency) curl() (Health, error) {
 	b, err := ioutil.ReadAll(p.Body)
 	if err != nil {
 		h = Health{
-			URL: url,
+			URL: d.URL,
 			Status: HealthFail,
 		}
 		return h, err
 	}
 	jerr := json.Unmarshal(b, &h)
-	if err != nil {
+	if jerr != nil {
 		return h, jerr
 	}
 	return h, nil
