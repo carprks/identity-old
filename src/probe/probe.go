@@ -11,7 +11,7 @@ import (
 func HTTP(w http.ResponseWriter, r *http.Request) {
 	buf, _ := ioutil.ReadAll(r.Body)
 	if len(buf) >= 1 {
-		fmt.Println(fmt.Printf("Probe Request", string(buf)))
+		fmt.Println(fmt.Sprintf("probe request: %v", string(buf)))
 	}
 
 	// get probe response
@@ -24,7 +24,7 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, err := w.Write(j)
 	if err != nil {
-		fmt.Println(fmt.Printf("Write Failed: %v", err))
+		fmt.Println(fmt.Errorf("write failed: %v", err))
 	}
 
 	return
