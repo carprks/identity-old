@@ -14,7 +14,7 @@ func TestRetrieveAll(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -51,7 +51,7 @@ func TestRetrieveAll(t *testing.T) {
 	for _, test := range create {
 		resp, err := test.Create()
 		if err != nil {
-			fmt.Println(fmt.Errorf("RetreiveAll Create Err: %v", err))
+			fmt.Println(fmt.Sprintf("RetreiveAll Create Err: %v", err))
 		}
 
 		idents = append(idents, resp)
@@ -76,7 +76,7 @@ func TestRetrieveAll(t *testing.T) {
 	for _, ident := range idents {
 		_, err := ident.DeleteEntry()
 		if err != nil {
-			fmt.Println(fmt.Errorf("retriveall delete err: %v", err))
+			fmt.Println(fmt.Sprintf("retriveall delete err: %v", err))
 		}
 	}
 }
@@ -85,7 +85,7 @@ func TestIdentity_Retrieve(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -163,7 +163,7 @@ func TestIdentity_Retrieve(t *testing.T) {
 	for _, test := range create {
 		res, err := test.Create()
 		if err != nil {
-			fmt.Println(fmt.Errorf("retrieve create err: %v", err))
+			fmt.Println(fmt.Sprintf("retrieve create err: %v", err))
 		}
 
 		created = append(created, res)
@@ -181,7 +181,7 @@ func TestIdentity_Retrieve(t *testing.T) {
 		if test.ID != "" {
 			_, err := test.DeleteEntry()
 			if err != nil {
-				fmt.Println(fmt.Errorf("retrive delete err: %v", err))
+				fmt.Println(fmt.Sprintf("retrive delete err: %v", err))
 			}
 		}
 	}

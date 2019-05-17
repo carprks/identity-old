@@ -19,7 +19,7 @@ func TestIdentity_Create(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -106,7 +106,7 @@ func TestIdentity_Create(t *testing.T) {
 		response, err := test.request.Create()
 		correct := assert.IsType(t, test.err, err)
 		if !correct {
-			fmt.Println(fmt.Errorf("create entry: %v", err))
+			fmt.Println(fmt.Sprintf("create entry: %v", err))
 		}
 		assert.Equal(t, test.expect, response)
 	}
@@ -115,7 +115,7 @@ func TestIdentity_Create(t *testing.T) {
 		if test.expect.ID != "" {
 			_, err := test.expect.DeleteEntry()
 			if err != nil {
-				fmt.Println(fmt.Errorf("create delete entry: %v", err))
+				fmt.Println(fmt.Sprintf("create delete entry: %v", err))
 			}
 		}
 	}
@@ -125,7 +125,7 @@ func TestCreate(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -207,7 +207,7 @@ func TestCreate(t *testing.T) {
 		i := identity.Response{}
 		err := json.Unmarshal(body, &i)
 		if err != nil {
-			fmt.Println(fmt.Errorf("create json error: %v", err))
+			fmt.Println(fmt.Sprintf("create json error: %v", err))
 		}
 		assert.Equal(t, test.expect, i)
 	}
@@ -215,7 +215,7 @@ func TestCreate(t *testing.T) {
 	for _, test := range tests {
 		_, err := test.expect.Identity.DeleteEntry()
 		if err != nil {
-			fmt.Println(fmt.Errorf("create delete http: %v", err))
+			fmt.Println(fmt.Sprintf("create delete http: %v", err))
 		}
 	}
 }

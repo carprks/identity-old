@@ -14,7 +14,7 @@ func TestIdentity_Delete(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -76,7 +76,7 @@ func TestIdentity_Delete(t *testing.T) {
 		resp, err := test.request.Create()
 		correct := assert.IsType(t, test.err, err)
 		if !correct {
-			fmt.Println(fmt.Errorf("delete create err: %v", err))
+			fmt.Println(fmt.Sprintf("delete create err: %v", err))
 		}
 		assert.Equal(t, test.expect, resp)
 	}
@@ -113,6 +113,6 @@ func TestIdentity_Delete(t *testing.T) {
 		ID: "241faf05-2d23-5088-845d-8782d84eee47",
 	}.DeleteEntry()
 	if err != nil {
-		fmt.Println(fmt.Errorf("delete fail test: %v", err))
+		fmt.Println(fmt.Sprintf("delete fail test: %v", err))
 	}
 }

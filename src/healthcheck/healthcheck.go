@@ -26,7 +26,7 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, fErr := w.Write(j)
 		if fErr != nil {
-			fmt.Println(fmt.Errorf("write response: %v", fErr))
+			fmt.Println(fmt.Sprintf("write response: %v", fErr))
 		}
 		return
 	}
@@ -36,7 +36,7 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, fErr := w.Write(j)
 	if fErr != nil {
-		fmt.Println(fmt.Errorf("write response: %v", fErr))
+		fmt.Println(fmt.Sprintf("write response: %v", fErr))
 	}
 }
 

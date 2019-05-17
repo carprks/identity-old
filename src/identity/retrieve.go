@@ -51,13 +51,13 @@ func Retrieve(w http.ResponseWriter, r *http.Request) {
 
 	ident, err := i.Retrieve()
 	if err != nil {
-		fmt.Println(fmt.Errorf("retrieve err: %v", err))
+		fmt.Println(fmt.Sprintf("retrieve err: %v", err))
 		w.WriteHeader(http.StatusInternalServerError)
 		eErr := json.NewEncoder(w).Encode(Response{
 			Error: err,
 		})
 		if eErr != nil {
-			fmt.Println(fmt.Errorf("retrieve encode err: %v", eErr))
+			fmt.Println(fmt.Sprintf("retrieve encode err: %v", eErr))
 		}
 		return
 	}
@@ -68,7 +68,7 @@ func Retrieve(w http.ResponseWriter, r *http.Request) {
 			Identity: ident,
 		})
 	if err != nil {
-		fmt.Println(fmt.Errorf("retrieve response encoder err: %v", err))
+		fmt.Println(fmt.Sprintf("retrieve response encoder err: %v", err))
 	}
 }
 
@@ -79,12 +79,12 @@ func RetrieveAllIdentities(w http.ResponseWriter, r *http.Request) {
 	identities, err := RetrieveAll()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(fmt.Errorf("retrieveall error: %v", err))
+		fmt.Println(fmt.Sprintf("retrieveall error: %v", err))
 		eErr := json.NewEncoder(w).Encode(Response{
 			Error: err,
 		})
 		if eErr != nil {
-			fmt.Println(fmt.Errorf("retrieveall encoder error: %v", eErr))
+			fmt.Println(fmt.Sprintf("retrieveall encoder error: %v", eErr))
 		}
 		return
 	}
@@ -94,7 +94,7 @@ func RetrieveAllIdentities(w http.ResponseWriter, r *http.Request) {
 		Identities: identities,
 	})
 	if err != nil {
-		fmt.Println(fmt.Errorf("retrieveall response encoder error: %v", err))
+		fmt.Println(fmt.Sprintf("retrieveall response encoder error: %v", err))
 		return
 	}
 }

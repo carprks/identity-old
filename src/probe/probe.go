@@ -23,7 +23,7 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, err := w.Write(j)
 	if err != nil {
-		fmt.Println(fmt.Errorf("write failed: %v", err))
+		fmt.Println(fmt.Sprintf("write failed: %v", err))
 	}
 
 	return

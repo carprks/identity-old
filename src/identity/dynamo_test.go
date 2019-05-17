@@ -14,7 +14,7 @@ func TestIdentity_CreateEntry(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -47,7 +47,7 @@ func TestIdentity_CreateEntry(t *testing.T) {
 	for _, test := range tests {
 		response, err := test.request.CreateEntry()
 		if err != nil {
-			fmt.Println(fmt.Errorf("dynamo create: %v", err))
+			fmt.Println(fmt.Sprintf("dynamo create: %v", err))
 		}
 		assert.IsType(t, test.err, err)
 		assert.Equal(t, test.expect, response)
@@ -58,7 +58,7 @@ func TestIdentity_UpdateEntry(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -159,11 +159,11 @@ func TestIdentity_UpdateEntry(t *testing.T) {
 	// delete and recreate
 	_, err := identOrig.DeleteEntry()
 	if err != nil {
-		fmt.Println(fmt.Errorf("update delete: %v", err))
+		fmt.Println(fmt.Sprintf("update delete: %v", err))
 	}
 	_, err = identOrig.CreateEntry()
 	if err != nil {
-		fmt.Println(fmt.Errorf("create delete: %v", err))
+		fmt.Println(fmt.Sprintf("create delete: %v", err))
 	}
 }
 
@@ -171,7 +171,7 @@ func TestIdentity_ScanEntry(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -217,7 +217,7 @@ func TestIdentity_ScanEntry(t *testing.T) {
 		response, err := test.request.ScanEntry()
 		correct := assert.IsType(t, test.err, err)
 		if !correct {
-			fmt.Println(fmt.Errorf("scan test err: %v", err))
+			fmt.Println(fmt.Sprintf("scan test err: %v", err))
 		}
 		assert.Equal(t, test.expect, response)
 	}
@@ -227,7 +227,7 @@ func TestIdentity_ScanEntries(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -254,7 +254,7 @@ func TestIdentity_RetrieveEntry(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -295,7 +295,7 @@ func TestIdentity_DeleteEntry(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 		}
 	}
 
@@ -336,7 +336,7 @@ func TestScanAll(t *testing.T) {
 	if os.Getenv("AWS_DB_TABLE") == "" {
 		err := godotenv.Load()
 		if err != nil {
-			fmt.Println(fmt.Errorf("godoterr: %v", err))
+			fmt.Println(fmt.Sprintf("godoterr: %v", err))
 		}
 	}
 
@@ -351,7 +351,7 @@ func TestScanAll(t *testing.T) {
 
 		_, err := ident.CreateEntry()
 		if err != nil {
-			fmt.Println(fmt.Errorf("scan create err: %v", err))
+			fmt.Println(fmt.Sprintf("scan create err: %v", err))
 		}
 	}
 
@@ -373,7 +373,7 @@ func TestScanAll(t *testing.T) {
 	for _, ident := range idents {
 		_, err := ident.DeleteEntry()
 		if err != nil {
-			fmt.Println(fmt.Errorf("delete scan err: %v", err))
+			fmt.Println(fmt.Sprintf("delete scan err: %v", err))
 		}
 	}
 }

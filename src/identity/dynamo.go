@@ -56,10 +56,10 @@ func (i Identity) CreateEntry() (Identity, error) {
 			case dynamodb.ErrCodeConditionalCheckFailedException:
 				return Identity{}, errors.New("identity already exists")
 			default:
-				return Identity{}, errors.New(fmt.Sprintf("unknown err: %v", awsErr))
+				return Identity{}, fmt.Errorf("unknown err: %v", awsErr)
 			}
 		} else {
-			return Identity{}, errors.New(fmt.Sprintf("unknown create error err: %v", putErr))
+			return Identity{}, fmt.Errorf("unknown create error err: %v", putErr)
 		}
 	}
 

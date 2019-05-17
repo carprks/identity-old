@@ -14,7 +14,7 @@ func _main(args []string) int {
 		if args[0] == "localDev" {
 			err := godotenv.Load()
 			if err != nil {
-				fmt.Println(fmt.Errorf("godotenv err: %v", err))
+				fmt.Println(fmt.Sprintf("godotenv err: %v", err))
 			}
 			fmt.Println("Running LocalDev")
 		}
