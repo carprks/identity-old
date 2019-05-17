@@ -2,6 +2,7 @@ package identity
 
 import (
 	"errors"
+	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -54,9 +55,11 @@ func (i Identity) CreateEntry() (Identity, error) {
 			switch awsErr.Code() {
 			case dynamodb.ErrCodeConditionalCheckFailedException:
 				return Identity{}, errors.New("identity already exists")
+			default:
+				return Identity{}, errors.New(fmt.Sprintf("unknown err: %v", awsErr))
 			}
 		} else {
-			return Identity{}, errors.New("unknown create error")
+			return Identity{}, errors.New(fmt.Sprintf("unknown create error err: %v", putErr))
 		}
 	}
 
