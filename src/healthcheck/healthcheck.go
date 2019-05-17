@@ -2,6 +2,7 @@ package healthcheck
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -23,17 +24,20 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 			Status: HealthFail,
 		})
 		w.WriteHeader(http.StatusOK)
-		w.Write(j)
+		_, fErr := w.Write(j)
+		if fErr != nil {
+			fmt.Println(fmt.Errorf("write response: %v", fErr))
+		}
 		return
 	}
 
 	j, _ := json.Marshal(health)
 	w.Header().Set("Content-Type", "application/health+json")
-	w.Header().Set("Strict-Transport-Security", "max-age=1000; includeSubDomains; preload")
-	w.Header().Set("Content-Security-Policy", "upgrade-insecure-requests")
-	w.Header().Set("Feature-Policy", "vibrate 'none'; geolocation 'none'")
 	w.WriteHeader(http.StatusOK)
-	w.Write(j)
+	_, fErr := w.Write(j)
+	if fErr != nil {
+		fmt.Println(fmt.Errorf("write response: %v", fErr))
+	}
 }
 
 // Check do the health check itself

@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	github.com/aws/aws-sdk-go v1.15.47
+	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/gorilla/mux v1.7.1
 	github.com/joho/godotenv v1.3.0
 	github.com/kr/pretty v0.1.0 // indirect

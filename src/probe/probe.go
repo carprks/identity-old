@@ -20,7 +20,6 @@ func HTTP(w http.ResponseWriter, r *http.Request) {
 	// send status
 	j, _ := json.Marshal(resp)
 	w.Header().Set("Content-Type", "application/health+json")
-	w.Header().Set("Service", "Identity")
 	w.WriteHeader(http.StatusOK)
 	_, err := w.Write(j)
 	if err != nil {

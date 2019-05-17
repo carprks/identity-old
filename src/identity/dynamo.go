@@ -183,9 +183,9 @@ func (i Identity) UpdateEntry(n Identity) (Identity, error) {
 		}
 	}
 
-	ret, updateErr := svc.UpdateItem(input)
-	if updateErr != nil {
-		return Identity{}, updateErr
+	ret, err := svc.UpdateItem(input)
+	if err != nil {
+		return Identity{}, err
 	}
 
 	return convertDynamoToIdentity(ret.Attributes)

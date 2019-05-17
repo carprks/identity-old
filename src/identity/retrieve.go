@@ -1,6 +1,12 @@
 package identity
 
-import "errors"
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/go-chi/chi"
+	"net/http"
+)
 
 // Retrieve get an identity
 func (i Identity) Retrieve() (Identity, error) {
@@ -32,4 +38,63 @@ func (i Identity) RetrievePlate(request Identity) (Identity, error) {
 func RetrieveAll() ([]Identity, error) {
 	i := Identity{}
 	return i.ScanEntries()
+}
+
+// Retrieve http get the identity
+func Retrieve(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	id := chi.URLParam(r, "identityID")
+	i := Identity{
+		ID: id,
+	}
+
+	ident, err := i.Retrieve()
+	if err != nil {
+		fmt.Println(fmt.Errorf("retrieve err: %v", err))
+		w.WriteHeader(http.StatusInternalServerError)
+		eErr := json.NewEncoder(w).Encode(Response{
+			Error: err,
+		})
+		if eErr != nil {
+			fmt.Println(fmt.Errorf("retrieve encode err: %v", eErr))
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(
+		Response{
+			Identity: ident,
+		})
+	if err != nil {
+		fmt.Println(fmt.Errorf("retrieve response encoder err: %v", err))
+	}
+}
+
+// RetrieveAllIdentities http get all the identities
+func RetrieveAllIdentities(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	identities, err := RetrieveAll()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Println(fmt.Errorf("retrieveall error: %v", err))
+		eErr := json.NewEncoder(w).Encode(Response{
+			Error: err,
+		})
+		if eErr != nil {
+			fmt.Println(fmt.Errorf("retrieveall encoder error: %v", eErr))
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(Response{
+		Identities: identities,
+	})
+	if err != nil {
+		fmt.Println(fmt.Errorf("retrieveall response encoder error: %v", err))
+		return
+	}
 }

@@ -8,13 +8,14 @@ import (
 
 // Response struct
 type Response struct {
-	Identity Identity `json:"identity,omitempty"`
-	Error    error    `json:"error,omitempty"`
+	Identities []Identity `json:"identities,omitempty"`
+	Identity   Identity   `json:"identity,omitempty"`
+	Error      error      `json:"error,omitempty"`
 }
 
 // Identity struct
 type Identity struct {
-	ID            string
+	ID            string         `json:"id,omitempty"`
 	Email         string         `json:"email,omitempty"`
 	Phone         string         `json:"phone,omitempty"`
 	Company       bool           `json:"company,omitempty"`
@@ -60,6 +61,9 @@ func (v VehicleType) convertToString() string {
 
 // GetVehicleType returns the vehicle type
 func GetVehicleType(s string) VehicleType {
+	// Title case the type
+	s = strings.Title(s)
+
 	if strings.Contains(string(VehicleTypeCar), s) {
 		return VehicleTypeCar
 	}

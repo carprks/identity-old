@@ -5,17 +5,34 @@ import (
 	"github.com/carprks/identity/src/healthcheck"
 	"github.com/carprks/identity/src/identity"
 	"github.com/carprks/identity/src/probe"
-	"github.com/gorilla/mux"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"github.com/joho/godotenv"
 	"net/http"
 	"os"
+	"time"
 )
+
+func presetHeaders(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+
+		w.Header().Set("Strict-Transport-Security", "max-age=1000; includeSubdomains; preload")
+		w.Header().Set("Content-Security-Policy", "upgrade-insecure-requests")
+		w.Header().Set("Feature-Policy", "vibrate 'none'; geolocation 'none'")
+		next.ServeHTTP(w, r.WithContext(ctx))
+	}
+	return http.HandlerFunc(fn)
+}
 
 func _main(args []string) int {
 	// development
 	if len(args) >= 1 {
 		if args[0] == "localDev" {
-			godotenv.Load()
+			err := godotenv.Load()
+			if err != nil {
+				fmt.Println(fmt.Errorf("godotenv err: %v", err))
+			}
 			fmt.Println("Running LocalDev")
 		}
 	}
@@ -26,30 +43,33 @@ func _main(args []string) int {
 	}
 
 	// Router
-	router := mux.NewRouter().StrictSlash(true)
+	router := chi.NewRouter()
+	router.Use(middleware.RequestID)
+	router.Use(middleware.RealIP)
+	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
+	router.Use(middleware.Timeout(60 * time.Second))
+	router.Use(presetHeaders)
 
 	// health check
-	router.HandleFunc("/healthcheck", healthcheck.HTTP)
+	router.Get(fmt.Sprintf("%s/healthcheck", os.Getenv("SITE_PREFIX")), healthcheck.HTTP)
 
 	// Probe
-	router.HandleFunc("/probe", probe.HTTP)
+	router.Get("/probe", probe.HTTP)
+	router.Get(fmt.Sprintf("%s/probe", os.Getenv("SITE_PREFIX")), probe.HTTP)
 
 	// Create
-	router.HandleFunc("/", identity.Create).Methods("POST")
+	router.Post(fmt.Sprintf("%s/", os.Getenv("SITE_PREFIX")), identity.Create)
 
-	// User Permissions
-	// router.HandleFunc("/users/", permissions.CreateUser).Methods("POST")
-	// router.HandleFunc("/users/", permissions.RetrieveAllUsers).Methods("GET")
-	// router.HandleFunc("/users/{permission}/", permissions.RetrieveUser).Methods("GET")
-	// router.HandleFunc("/users/{permission}/", permissions.UpdateUser).Methods("PATCH")
-	// router.HandleFunc("/users/{permission}/", permissions.DeleteUser).Methods("DELETE")
-	//
-	// // General Permission
-	// router.HandleFunc("/", permissions.Create).Methods("POST")
-	// router.HandleFunc("/", permissions.RetrieveAll).Methods("GET")
-	// router.HandleFunc("/{permission}/", permissions.RetrievePermissions).Methods("GET")
-	// router.HandleFunc("/{permission}/", permissions.UpdatePermission).Methods("PATCH")
-	// router.HandleFunc("/{permission}/", permissions.DeletePermission).Methods("DELETE")
+	// Retrieve
+	router.Get(fmt.Sprintf("%s/", os.Getenv("SITE_PREFIX")), identity.RetrieveAllIdentities)
+
+	// User
+	router.Route(fmt.Sprintf("%s/{identityID}", os.Getenv("SITE_PREFIX")), func(r chi.Router) {
+		r.Get("/", identity.Retrieve)
+		r.Put("/", identity.Update)
+		r.Delete("/", identity.Delete)
+	})
 
 	// Start Server
 	fmt.Println(fmt.Sprintf("Starting Server on Port :%s", port))

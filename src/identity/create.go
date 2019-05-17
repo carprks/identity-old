@@ -27,23 +27,25 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		err := json.NewEncoder(w).Encode(Response{
+		fmt.Println(fmt.Errorf("body err: %v", err))
+		eErr := json.NewEncoder(w).Encode(Response{
 			Error: err,
 		})
-		if err != nil {
-			fmt.Println(fmt.Errorf("body err: %v", err))
+		if eErr != nil {
+			fmt.Println(fmt.Errorf("body encode err: %v", eErr))
 		}
 		return
 	}
 
-	jsonErr := json.Unmarshal(body, &i)
-	if jsonErr != nil {
+	err = json.Unmarshal(body, &i)
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		err := json.NewEncoder(w).Encode(Response{
-			Error: jsonErr,
+		fmt.Println(fmt.Errorf("json err: %v", err))
+		eErr := json.NewEncoder(w).Encode(Response{
+			Error: err,
 		})
-		if err != nil {
-			fmt.Println(fmt.Errorf("json Err: %v", err))
+		if eErr != nil {
+			fmt.Println(fmt.Errorf("json encode err: %v", eErr))
 		}
 		return
 	}
@@ -51,11 +53,12 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	resp, err := i.Create()
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		err := json.NewEncoder(w).Encode(Response{
+		fmt.Println(fmt.Errorf("create err: %v", err))
+		eErr := json.NewEncoder(w).Encode(Response{
 			Error: err,
 		})
-		if err != nil {
-			fmt.Println(fmt.Errorf("create Err: %v", err))
+		if eErr != nil {
+			fmt.Println(fmt.Errorf("create encode err: %v", eErr))
 		}
 		return
 	}
@@ -65,7 +68,6 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		Identity: resp,
 	})
 	if err != nil {
-		fmt.Println(fmt.Errorf("created Err: %v", err))
+		fmt.Println(fmt.Errorf("created err: %v", err))
 	}
-	return
 }
