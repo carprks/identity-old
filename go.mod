@@ -7,6 +7,8 @@ require (
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/gorilla/mux v1.7.1
 	github.com/joho/godotenv v1.3.0
+	github.com/keloran/go-healthcheck v0.0.0-20190520141511-c31732ef5eb5
+	github.com/keloran/go-probe v0.0.0-20190520134702-cd0997f2ee4b
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/smartystreets/goconvey v0.0.0-20190330032615-68dc04aab96a // indirect

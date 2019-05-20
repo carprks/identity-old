@@ -2,11 +2,11 @@ package src
 
 import (
 	"fmt"
-	"github.com/carprks/identity/src/healthcheck"
 	"github.com/carprks/identity/src/identity"
-	"github.com/carprks/identity/src/probe"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/keloran/go-probe"
+	"github.com/keloran/go-healthcheck"
 	"os"
 	"time"
 )
