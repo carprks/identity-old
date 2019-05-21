@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "deploy Identity service"
+Parameters:
+  StackName:
+    Type: String
+    Default: production
+    Description: the name of the fargate stack
+  ServiceName:
+    Type: String
+    Default: nginx
+    Description: name of the service
+  ImageUrl:
+    Type: String
+    Default: nginx
+    Description: url of the docker image
+  ContainerPort:
+    Type: Number
+    Default: 80
+    Description: what port
+  ContainerCpu:
+    Type: Number
+    Default: 256
+    Description: amount of cpu
+  ContainerMemory:
+    Type: Number
+    Default: 512
+    Description: amount of memory
+  Path:
+    Type: String
+    Default: "*"
+    Description: default path for load balancer
+  Priority:
+    Type: Number
+    Default: 1
+    Description: default routing rule priority
+  DesiredCount:
+    Type: Number
+    Default: 2
+    Description: how many of service to run
+  Role:
+    Type: String
+    Default: ""
+    Description: IAM role
+Conditions:
+  HasCustomRole: !Not [!Equals [!Ref 'Role', '']]
+Resources:
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Ref 'ServiceName'
+      Cpu: !Ref 'ContainerCpu'
+      Memory: !Ref 'ContainerMemory'
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ExecutionRoleArn:
+        Fm::ImportValue:
+          !Join [':', [!Ref 'StackName', 'ECSTaskExecutionRole']]
+      TaskRoleArn:
+        Fn::If:
+          - 'HasCustomRole'
+          - !Ref 'Role'
+          - !Ref "AWS::NoValue"
+      ContainerDefinitions:
+        - Name: !Ref 'ServiceName'
+          Image: !Ref 'ImageUrl'
+          Essential: true
+          PortMappings:
+            - ContainerPort: !Ref 'ContainerPort'
+          Environment:
+            - Name: VERSION_INFO
+              Value: 'v0'
+            - Name: BUILD_DATE
+              Value: '-'
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 6
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      TargetType: ip
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: '20'
+      Name: !Ref 'ServiceName'
+      Port: !Ref 'ContainerPort'
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      VpcId:
+        Fn::ImportValue:
+          !Join [':', [!Ref 'StackName', 'VPCId']]
+  LoadBalancerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - TargetGroupArn: !Ref 'TargetGroup'
+          Type: 'forward'
+      Conditions:
+        - Field: path-pattern
+          Values: [!Ref 'Path']
+      ListenerArn:
+        Fn::ImportValue:
+          !Join [':', [!Ref 'StackName', 'PublicListener']]
+      Priority: !Ref 'Priority'
