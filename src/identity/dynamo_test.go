@@ -246,7 +246,7 @@ func TestIdentity_ScanEntries(t *testing.T) {
 	for _, test := range tests {
 		response, err := test.request.ScanEntries()
 		assert.IsType(t, test.err, err)
-		assert.Equal(t, test.expect, len(response))
+		assert.GreaterOrEqual(t, len(response), test.expect)
 	}
 }
 
