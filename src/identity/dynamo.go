@@ -49,7 +49,7 @@ func (i Identity) CreateEntry() (Identity, error) {
 		},
 		ReturnValues: aws.String("ALL_OLD"),
 	}
-	res, putErr := svc.PutItem(input)
+	_, putErr := svc.PutItem(input)
 	if putErr != nil {
 		if awsErr, ok := putErr.(awserr.Error); ok {
 			switch awsErr.Code() {
@@ -63,7 +63,7 @@ func (i Identity) CreateEntry() (Identity, error) {
 		}
 	}
 
-	fmt.Println(fmt.Sprintf("create result: %v", res))
+	// fmt.Println(fmt.Sprintf("create result: %v", res))
 
 	return i, nil
 }

@@ -367,7 +367,7 @@ func TestScanAll(t *testing.T) {
 	for _, test := range tests {
 		resp, err := identity.ScanAll()
 		assert.IsType(t, test.err, err)
-		assert.Equal(t, len(test.expect), len(resp))
+		assert.GreaterOrEqual(t, len(resp), len(test.expect))
 	}
 
 	for _, ident := range idents {
