@@ -345,11 +345,12 @@ func (i Identity) ScanEntries() ([]Identity, error) {
 }
 
 func convertRegistrationsToDynamo(regs []Registration) (dynamodb.AttributeValue, error) {
-	retMap := map[string]*dynamodb.AttributeValue{}
 	ret := dynamodb.AttributeValue{}
+	lMap := []*dynamodb.AttributeValue{}
 
 	if len(regs) >= 1 {
 		for _, reg := range regs {
+			retMap := map[string]*dynamodb.AttributeValue{}
 			retMap["vehicleType"] = &dynamodb.AttributeValue{
 				S: aws.String(reg.VehicleType.convertToString()),
 			}
@@ -359,14 +360,16 @@ func convertRegistrationsToDynamo(regs []Registration) (dynamodb.AttributeValue,
 			retMap["plate"] = &dynamodb.AttributeValue{
 				S: aws.String(reg.Plate),
 			}
+			mmap := &dynamodb.AttributeValue{
+				M: retMap,
+			}
+
+
+			lMap = append(lMap, mmap)
 		}
 
 		ret = dynamodb.AttributeValue{
-			L: []*dynamodb.AttributeValue{
-				{
-					M: retMap,
-				},
-			},
+			L: lMap,
 		}
 	} else {
 		ret = dynamodb.AttributeValue{
