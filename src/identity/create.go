@@ -26,40 +26,19 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	i := Identity{}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println(fmt.Sprintf("body err: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("body encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 
 	err = json.Unmarshal(body, &i)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println(fmt.Sprintf("json err: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("json encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 
 	resp, err := i.Create()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println(fmt.Sprintf("create err: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("create encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 

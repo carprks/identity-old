@@ -30,39 +30,18 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	req := Identity{}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println(fmt.Sprintf("update body err: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("update encode body err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println(fmt.Sprintf("update unmarshall err: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("update unmarshall encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 	resp, err := i.Update(req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(fmt.Sprintf("update err: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("update encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 

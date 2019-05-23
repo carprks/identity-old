@@ -36,41 +36,20 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	i := Identity{}
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Println(fmt.Sprintf("body err: %v", err))
-		w.WriteHeader(http.StatusBadRequest)
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("body encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 
 	err = json.Unmarshal(body, &i)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println(fmt.Sprintf("unmarshall err: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("unmarshall encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 
 	i.ID = id
 	resp, err := i.Delete()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(fmt.Sprintf("delete err: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("delete encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 

@@ -1,8 +1,10 @@
 package identity
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/satori/go.uuid"
+	"net/http"
 	"strings"
 )
 
@@ -87,4 +89,15 @@ func (i Identity) createIdentifier() string {
 
 	u := uuid.NewV5(uuid.NamespaceURL, fmt.Sprintf("https://identity.carprk.com/user/%s:%s", i.Email, i.Phone))
 	return u.String()
+}
+
+func ErrorResponse(w http.ResponseWriter, e error) {
+	w.WriteHeader(http.StatusBadRequest)
+	fmt.Println(fmt.Sprintf("err: %v", e))
+	eErr := json.NewEncoder(w).Encode(Response{
+		Error: e,
+	})
+	if eErr != nil {
+		fmt.Println(fmt.Sprintf("encode err: %v", eErr))
+	}
 }

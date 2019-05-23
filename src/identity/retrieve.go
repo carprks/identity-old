@@ -51,14 +51,7 @@ func Retrieve(w http.ResponseWriter, r *http.Request) {
 
 	ident, err := i.Retrieve()
 	if err != nil {
-		fmt.Println(fmt.Sprintf("retrieve err: %v", err))
-		w.WriteHeader(http.StatusInternalServerError)
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("retrieve encode err: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 
@@ -78,14 +71,7 @@ func RetrieveAllIdentities(w http.ResponseWriter, r *http.Request) {
 
 	identities, err := RetrieveAll()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(fmt.Sprintf("retrieveall error: %v", err))
-		eErr := json.NewEncoder(w).Encode(Response{
-			Error: err,
-		})
-		if eErr != nil {
-			fmt.Println(fmt.Sprintf("retrieveall encoder error: %v", eErr))
-		}
+		ErrorResponse(w, err)
 		return
 	}
 
