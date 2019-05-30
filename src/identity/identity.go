@@ -91,6 +91,7 @@ func (i Identity) createIdentifier() string {
 	return u.String()
 }
 
+// ErrorResponse default response
 func ErrorResponse(w http.ResponseWriter, e error) {
 	w.WriteHeader(http.StatusBadRequest)
 	fmt.Println(fmt.Sprintf("err: %v", e))
