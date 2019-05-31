@@ -2,6 +2,8 @@ sudo: required
 language: bash
 services:
   - docker
+env:
+  - CLUSTER=$DEV_CLUSTER
 script:
   - docker build -t $APP:latest
     --build-arg build=$TRAVIS_COMMIT
@@ -20,3 +22,7 @@ script:
 after_success:
   - bash .travis-deploy/docker.sh
   - bash .travis-deploy/deploy.sh
+  if: branch = master
+    env:
+      - CLUSTER=$LIVE_CLUSTER
+    - bash .travis-deploy/deploy.sh
