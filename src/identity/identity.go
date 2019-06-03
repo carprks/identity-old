@@ -37,6 +37,8 @@ type VehicleType string
 const (
 	// VehicleTypeBike Motorbike
 	VehicleTypeBike VehicleType = "Bike"
+
+	// VehicleTypeMotorBike Motorbike
 	VehicleTypeMotorBike VehicleType = "Motorbike"
 
 	// VehicleTypeCar Car
