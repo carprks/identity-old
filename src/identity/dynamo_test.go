@@ -130,7 +130,7 @@ func TestIdentity_UpdateEntry(t *testing.T) {
 				Registrations: []identity.Registration{
 					{
 						Plate:       "test12345",
-						VehicleType: identity.VehicleTypeBike,
+						VehicleType: identity.VehicleTypeMotorBike,
 						Oversized:   true,
 					},
 				},

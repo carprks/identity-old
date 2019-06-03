@@ -36,7 +36,8 @@ type VehicleType string
 
 const (
 	// VehicleTypeBike Motorbike
-	VehicleTypeBike VehicleType = "Motorbike"
+	VehicleTypeBike VehicleType = "Bike"
+	VehicleTypeMotorBike VehicleType = "Motorbike"
 
 	// VehicleTypeCar Car
 	VehicleTypeCar VehicleType = "Car"
@@ -51,6 +52,8 @@ const (
 func (v VehicleType) convertToString() string {
 	switch v {
 	case VehicleTypeBike:
+		return string(v)
+	case VehicleTypeMotorBike:
 		return string(v)
 	case VehicleTypeCar:
 		return string(v)
@@ -76,6 +79,8 @@ func GetVehicleType(s string) VehicleType {
 
 	if strings.Contains(string(VehicleTypeBike), s) {
 		return VehicleTypeBike
+	} else if strings.Contains(string(VehicleTypeMotorBike), s) {
+		return VehicleTypeMotorBike
 	}
 
 	return VehicleTypeUnknown
