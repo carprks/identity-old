@@ -12,7 +12,7 @@ import (
 type Response struct {
 	Identities []Identity `json:"identities,omitempty"`
 	Identity   Identity   `json:"identity,omitempty"`
-	Error      error      `json:"error,omitempty"`
+	Error      string     `json:"error,omitempty"`
 }
 
 // Identity struct
@@ -109,7 +109,7 @@ func ErrorResponse(w http.ResponseWriter, e error) {
 	w.WriteHeader(http.StatusBadRequest)
 	fmt.Println(fmt.Sprintf("err: %v", e))
 	eErr := json.NewEncoder(w).Encode(Response{
-		Error: e,
+		Error: fmt.Sprintf("%v", e),
 	})
 	if eErr != nil {
 		fmt.Println(fmt.Sprintf("encode err: %v", eErr))

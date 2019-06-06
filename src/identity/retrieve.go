@@ -50,19 +50,33 @@ func RetrieveUnknown(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	email := chi.URLParam(r, "email")
-	plate := chi.URLParam(r, "plate")
+	plateReq := chi.URLParam(r, "plate")
 
 	ident := Identity{
 		Email: email,
 		Registrations: []Registration{
 			{
-				Plate: plate,
+				Plate: plateReq,
 			},
 		},
 	}
 	resp, err := ident.ScanEntry()
 	if err != nil {
 		ErrorResponse(w, err)
+	}
+
+	found := false
+	if len(resp.Registrations) >= 1 {
+		for _, plate := range resp.Registrations {
+			if plate.Plate == plateReq {
+				found = true
+			}
+		}
+	}
+
+	if !found {
+		ErrorResponse(w, errors.New("no plate match to email"))
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
