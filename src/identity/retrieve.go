@@ -40,6 +40,40 @@ func RetrieveAll() ([]Identity, error) {
 	return i.ScanEntries()
 }
 
+// RetrieveUnknown gets the identity from an email and a plate
+func (i Identity) RetrieveUnknown(request Identity) (Identity, error) {
+	return Identity{}, nil
+}
+
+// RetrieveUnknown gets the identify from an unknown id
+func RetrieveUnknown(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	email := chi.URLParam(r, "email")
+	plate := chi.URLParam(r, "plate")
+
+	ident := Identity{
+		Email: email,
+		Registrations: []Registration{
+			{
+				Plate: plate,
+			},
+		},
+	}
+	resp, err := ident.ScanEntry()
+	if err != nil {
+		ErrorResponse(w, err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(Response{
+		Identity: resp,
+	})
+	if err != nil {
+		fmt.Println(fmt.Sprintf("retrieve login response encoder err: %v", err))
+	}
+}
+
 // Retrieve http get the identity
 func Retrieve(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -56,8 +90,7 @@ func Retrieve(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(
-		Response{
+	err = json.NewEncoder(w).Encode(Response{
 			Identity: ident,
 		})
 	if err != nil {

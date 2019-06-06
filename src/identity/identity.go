@@ -31,6 +31,12 @@ type Registration struct {
 	Plate       string      `json:"plate"`
 }
 
+// Login struct
+type Login struct {
+	Email string `json:"email"`
+	Plate string `json:"plate"`
+}
+
 // VehicleType self explanatory
 type VehicleType string
 

@@ -34,6 +34,11 @@ func Routes() chi.Router {
 	// Retrieve
 	router.Get(fmt.Sprintf("%s/", os.Getenv("SITE_PREFIX")), identity.RetrieveAllIdentities)
 
+	// Identify
+	router.Route(fmt.Sprintf("%s/identify/{email}/{plate}", os.Getenv("SITE_PREFIX")), func(r chi.Router) {
+		r.Get("/", identity.RetrieveUnknown)
+	})
+
 	// User
 	router.Route(fmt.Sprintf("%s/{identityID}", os.Getenv("SITE_PREFIX")), func(r chi.Router) {
 		r.Get("/", identity.Retrieve)
