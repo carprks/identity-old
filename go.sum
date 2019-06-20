@@ -20,6 +20,8 @@ github.com/aws/aws-sdk-go v1.20.0 h1:t74VM7opfCwwbe+wg6eys4a2wLqky6Znitr7BsqYPUg
 github.com/aws/aws-sdk-go v1.20.0/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/aws/aws-sdk-go v1.20.3 h1:iQLxGfR0yh7g5M8Xg7wOGyhQ4hoZb/zA0XQNOGPdlpY=
 github.com/aws/aws-sdk-go v1.20.3/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
+github.com/aws/aws-sdk-go v1.20.4 h1:czX3oqFyqz/AELrK/tneNuyZgNIrWnyqP+iQXsQ32E0=
+github.com/aws/aws-sdk-go v1.20.4/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/carprks/login v0.0.0-20190606133331-ab67f441feb2 h1:DVphXRvGEQhW/2Jw6DdFnuImuoEff7d6Xl3sgvkWHew=
 github.com/carprks/login v0.0.0-20190606133331-ab67f441feb2/go.mod h1:z+Bmi8fTBHse2yNrnsjAEQ0Srtek9hOQ1BI92IF9GU8=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
