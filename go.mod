@@ -3,7 +3,7 @@ module github.com/carprks/identity
 go 1.12
 
 require (
-	github.com/aws/aws-sdk-go v1.20.11
+	github.com/aws/aws-sdk-go v1.20.12
 	github.com/carprks/login v0.0.0-20190606133331-ab67f441feb2
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-ini/ini v1.42.0 // indirect
