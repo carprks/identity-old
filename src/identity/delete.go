@@ -31,7 +31,7 @@ func (i Identity) Delete() (Identity, error) {
 func Delete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	id := chi.URLParam(r, "identityID")
+	id := chi.URLParam(r, "identityId")
 
 	i := Identity{}
 	body, err := ioutil.ReadAll(r.Body)

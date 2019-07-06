@@ -40,7 +40,7 @@ func Routes() chi.Router {
 	})
 
 	// User
-	router.Route(fmt.Sprintf("%s/{identityID}", os.Getenv("SITE_PREFIX")), func(r chi.Router) {
+	router.Route(fmt.Sprintf("%s/{identityId}", os.Getenv("SITE_PREFIX")), func(r chi.Router) {
 		r.Get("/", identity.Retrieve)
 		r.Put("/", identity.Update)
 		r.Delete("/", identity.Delete)

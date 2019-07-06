@@ -92,7 +92,7 @@ func RetrieveUnknown(w http.ResponseWriter, r *http.Request) {
 func Retrieve(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	id := chi.URLParam(r, "identityID")
+	id := chi.URLParam(r, "identityId")
 	i := Identity{
 		ID: id,
 	}
