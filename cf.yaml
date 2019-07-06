@@ -256,7 +256,7 @@ Resources:
             application/json: !Ref EmptyModel
       Integration:
         Type: HTTP
-        IntegrationMethod: GET
+        IntegrationHttpMethod: GET
         Uri: !Join ['/', [!Ref LoadBalancerAddress, !Ref ServiceName, !Ref ServiceName, '{identityId}', '']]
         RequestParameters:
           integration.request.path.identityId: method.request.path.identityId
@@ -281,7 +281,7 @@ Resources:
             application/json: !Ref EmptyModel
       Integration:
         Type: HTTP
-        IntegrationMethod: PUT
+        IntegrationHttpMethod: PUT
         Uri: !Join ['/', [!Ref LoadBalancerAddress, !Ref ServiceName, !Ref ServiceName, '{identityId}', '']]
         RequestParameters:
           integration.request.path.identityId: method.request.path.identityId
@@ -306,7 +306,7 @@ Resources:
             application/json: !Ref EmptyModel
       Integration:
         Type: HTTP
-        IntegrationMethod: DELETE
+        IntegrationHttpMethod: DELETE
         Uri: !Join ['/', [!Ref LoadBalancerAddress, !Ref ServiceName, !Ref ServiceName, '{identityId}', '']]
         RequestParameters:
           integration.request.path.identityId: method.request.path.identityId
