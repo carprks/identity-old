@@ -4,7 +4,6 @@ go 1.12
 
 require (
 	github.com/aws/aws-sdk-go v1.20.15
-	github.com/carprks/login v0.0.0-20190606133331-ab67f441feb2
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-ini/ini v1.42.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
