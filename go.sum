@@ -42,6 +42,8 @@ github.com/aws/aws-sdk-go v1.20.14 h1:ivPlTrZmHf4f4TvAG79yOyo2fRH0JW4dz+fsV8IQnb
 github.com/aws/aws-sdk-go v1.20.14/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/aws/aws-sdk-go v1.20.15 h1:y9ts8MJhB7ReUidS6Rq+0KxdFeL01J+pmOlGq6YqpiQ=
 github.com/aws/aws-sdk-go v1.20.15/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
+github.com/aws/aws-sdk-go v1.20.17 h1:ZQ0cM9FpuufVDHlNViD8vD68IkEQL/VUOMwJPBqkaaM=
+github.com/aws/aws-sdk-go v1.20.17/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
