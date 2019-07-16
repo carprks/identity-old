@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Permissions Service"
+Description: "Identity Service"
 
 Parameters:
   ServiceName:
@@ -25,7 +25,7 @@ Parameters:
     Type: String
   Priority:
     Type: Number
-    Default: 2
+    Default: 3
   DesiredCount:
     Type: Number
     Default: 1
