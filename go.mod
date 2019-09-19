@@ -3,7 +3,7 @@ module github.com/carprks/identity
 go 1.12
 
 require (
-	github.com/aws/aws-sdk-go v1.24.0
+	github.com/aws/aws-sdk-go v1.24.1
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/go-ini/ini v1.42.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
